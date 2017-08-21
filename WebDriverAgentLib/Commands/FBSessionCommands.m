@@ -9,6 +9,8 @@
 
 #import "FBSessionCommands.h"
 
+#import <sys/utsname.h>
+
 #import "FBApplication.h"
 #import "FBConfiguration.h"
 #import "FBRouteRequest.h"
@@ -104,6 +106,13 @@
 
 + (id<FBResponsePayload>)handleGetStatus:(FBRouteRequest *)request
 {
+  struct utsname systemInfo;
+  
+  uname(&systemInfo);
+  
+  NSString* code = [NSString stringWithCString:systemInfo.machine
+                                      encoding:NSUTF8StringEncoding];
+  
   return
   FBResponseWithStatus(
     FBCommandStatusNoError,
@@ -111,6 +120,7 @@
       @"state" : @"success",
       @"os" :
         @{
+          @"code" : code ?: @"",
           @"name" : [[UIDevice currentDevice] systemName],
           @"version" : [[UIDevice currentDevice] systemVersion],
         },

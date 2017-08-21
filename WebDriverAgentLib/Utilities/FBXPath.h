@@ -59,6 +59,8 @@ extern NSString *const XCElementSnapshotXPathQueryEvaluationException;
  */
 + (nullable NSString *)xmlStringWithSnapshot:(XCElementSnapshot *)root;
 
++ (nullable NSString *)uuXmlStringWithSnapshot:(XCElementSnapshot *)root;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -104,4 +104,14 @@ static FBSession *_activeSession;
   return application;
 }
 
+- (FBApplication *)uu_application
+{
+  FBApplication *application = [FBApplication fb_activeApplication];
+  const BOOL testedApplicationIsActiveAndNotRunning = (application.processID == self.testedApplication.processID && !application.running);
+  if (testedApplicationIsActiveAndNotRunning) {
+    [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
+  }
+  return application;
+}
+
 @end

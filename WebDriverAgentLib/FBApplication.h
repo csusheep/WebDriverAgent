@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (nullable instancetype)fb_activeApplication;
 
++ (nullable instancetype)uu_activeApplication;
+
 /**
  It allows to turn on/off waiting for application quiescence, while performing queries. Defaults to NO.
  */
