@@ -64,7 +64,8 @@
     [[FBRoute POST:@"/uusense/doubleTap"] respondWithTarget:self action:@selector(uuHandleDoubleTapCoordinate:)],
     [[FBRoute POST:@"/uusense/dragfromtoforduration"] respondWithTarget:self action:@selector(uuHandleDragCoordinate:)],
     [[FBRoute GET:@"/uusense/ssid"].withoutSession respondWithTarget:self action:@selector(uuGetSSID:)],
-    [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)]
+    [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
+    [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)]
   ];
 }
 
@@ -144,7 +145,7 @@
   
 
   __block NSError *innerError;
-  [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)()){
+  [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
     [[FBXCTestDaemonsProxy testRunnerProxy] _XCT_synthesizeEvent:event completion:^(NSError *scrollingError) {
       innerError = scrollingError;
       didSucceed = (scrollingError == nil);
@@ -182,7 +183,7 @@
     
     
     __block NSError *innerError;
-    [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)()){
+    [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
       [[FBXCTestDaemonsProxy testRunnerProxy] _XCT_synthesizeEvent:event completion:^(NSError *scrollingError) {
         innerError = scrollingError;
         didSucceed = (scrollingError == nil);
@@ -247,6 +248,10 @@
   NSLog(@"time cost: %0.3f", end - start);
   return FBResponseWithObject(result);
   
+}
+
++ (id<FBResponsePayload>)uuBack:(FBRouteRequest *)request {
+  return FBResponseWithOK();
 }
 
 
