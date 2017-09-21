@@ -251,7 +251,14 @@
 }
 
 + (id<FBResponsePayload>)uuBack:(FBRouteRequest *)request {
-  return FBResponseWithOK();
+  
+  FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
+  if (application.navigationBars.buttons.count > 0) {
+    [[application.navigationBars.buttons elementBoundByIndex:0] tap];
+    return FBResponseWithOK();
+  }
+  return FBResponseWithErrorFormat(@"Cannot back of the current page");
+  
 }
 
 
