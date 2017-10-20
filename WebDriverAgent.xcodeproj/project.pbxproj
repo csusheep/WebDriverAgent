@@ -1630,15 +1630,16 @@
 				TargetAttributes = {
 					EE158A981CBD452B00A3E3F0 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = VDZ6WAVGC2;
+						DevelopmentTeam = 8SC497C43L;
 						ProvisioningStyle = Automatic;
 					};
 					EE836C011C0F118600D87246 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = 8SC497C43L;
 					};
 					EE9B75D31CF7956C00275851 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = VDZ6WAVGC2;
+						DevelopmentTeam = 8SC497C43L;
 					};
 					EE9B75EB1CF7956C00275851 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -1646,7 +1647,7 @@
 					};
 					EEF988291C486603005CA669 = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = VDZ6WAVGC2;
+						DevelopmentTeam = 8SC497C43L;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -2074,7 +2075,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = NO;
-				DEVELOPMENT_TEAM = VDZ6WAVGC2;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2104,7 +2105,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
-				DEVELOPMENT_TEAM = VDZ6WAVGC2;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2184,6 +2185,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -2199,6 +2201,7 @@
 		EE836C0C1C0F118600D87246 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -2217,7 +2220,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = VDZ6WAVGC2;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				INFOPLIST_FILE = WebDriverAgentTests/IntegrationApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2231,7 +2234,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
-				DEVELOPMENT_TEAM = VDZ6WAVGC2;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				INFOPLIST_FILE = WebDriverAgentTests/IntegrationApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2274,7 +2277,7 @@
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = VDZ6WAVGC2;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -2299,7 +2302,7 @@
 			buildSettings = {
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = VDZ6WAVGC2;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",

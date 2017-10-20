@@ -86,7 +86,7 @@
   {
     NSString *bundleID = [LSApplicationProxy_class performSelector:@selector(applicationIdentifier)] ?:@"";
     NSString *localizedName = [LSApplicationProxy_class performSelector:@selector(localizedName)] ?:@"";
-    NSString *shortVersionString =  [LSApplicationProxy_class performSelector:@selector(shortVersionString)];
+    NSString *shortVersionString =  [LSApplicationProxy_class performSelector:@selector(shortVersionString)] ?:@"";
     if ([bundleID  isEqual: @""] || [bundleID hasPrefix:@"com.apple."] ) {
       continue;
     }
