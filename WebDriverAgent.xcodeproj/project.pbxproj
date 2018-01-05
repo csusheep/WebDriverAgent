@@ -1638,6 +1638,12 @@
 						DevelopmentTeam = 8SC497C43L;
 						ProvisioningStyle = Automatic;
 					};
+					EE2202031ECC612200A29571 = {
+						DevelopmentTeam = 8SC497C43L;
+					};
+					EE5095DD1EBCC9090028E2FE = {
+						DevelopmentTeam = 8SC497C43L;
+					};
 					EE836C011C0F118600D87246 = {
 						CreatedOnToolsVersion = 7.1.1;
 						DevelopmentTeam = 8SC497C43L;
@@ -2138,6 +2144,7 @@
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				INFOPLIST_FILE = WebDriverAgentTests/IntegrationTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2151,6 +2158,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				INFOPLIST_FILE = WebDriverAgentTests/IntegrationTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2165,6 +2173,7 @@
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				INFOPLIST_FILE = WebDriverAgentTests/IntegrationTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2178,6 +2187,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				DEVELOPMENT_TEAM = 8SC497C43L;
 				INFOPLIST_FILE = WebDriverAgentTests/IntegrationTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
