@@ -9,6 +9,14 @@
 /* Begin PBXBuildFile section */
 		188E876D1F4AC4AA00D88C91 /* UUElementCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 188E876B1F4AC4AA00D88C91 /* UUElementCommands.h */; };
 		188E876E1F4AC4AA00D88C91 /* UUElementCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 188E876C1F4AC4AA00D88C91 /* UUElementCommands.m */; };
+		188F02BE200DF4C200BE5F60 /* BatteryInfoManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 188F02B6200DF4C100BE5F60 /* BatteryInfoManager.h */; };
+		188F02BF200DF4C200BE5F60 /* BatteryInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 188F02B7200DF4C100BE5F60 /* BatteryInfoManager.m */; };
+		188F02C0200DF4C200BE5F60 /* DeviceDataLibrery.h in Headers */ = {isa = PBXBuildFile; fileRef = 188F02B8200DF4C100BE5F60 /* DeviceDataLibrery.h */; };
+		188F02C1200DF4C200BE5F60 /* DeviceDataLibrery.m in Sources */ = {isa = PBXBuildFile; fileRef = 188F02B9200DF4C100BE5F60 /* DeviceDataLibrery.m */; };
+		188F02C2200DF4C200BE5F60 /* DeviceInfoManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 188F02BA200DF4C100BE5F60 /* DeviceInfoManager.h */; };
+		188F02C3200DF4C200BE5F60 /* DeviceInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 188F02BB200DF4C100BE5F60 /* DeviceInfoManager.m */; };
+		188F02C4200DF4C200BE5F60 /* NetWorkInfoManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 188F02BC200DF4C100BE5F60 /* NetWorkInfoManager.h */; };
+		188F02C5200DF4C200BE5F60 /* NetWorkInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 188F02BD200DF4C100BE5F60 /* NetWorkInfoManager.m */; };
 		711084441DA3AA7500F913D6 /* FBXPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 711084421DA3AA7500F913D6 /* FBXPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		711084451DA3AA7500F913D6 /* FBXPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 711084431DA3AA7500F913D6 /* FBXPath.m */; };
 		7119E1EC1E891F8600D0B125 /* FBPickerWheelSelectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7119E1EB1E891F8600D0B125 /* FBPickerWheelSelectTests.m */; };
@@ -401,6 +409,14 @@
 /* Begin PBXFileReference section */
 		188E876B1F4AC4AA00D88C91 /* UUElementCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUElementCommands.h; sourceTree = "<group>"; };
 		188E876C1F4AC4AA00D88C91 /* UUElementCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUElementCommands.m; sourceTree = "<group>"; };
+		188F02B6200DF4C100BE5F60 /* BatteryInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryInfoManager.h; sourceTree = "<group>"; };
+		188F02B7200DF4C100BE5F60 /* BatteryInfoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryInfoManager.m; sourceTree = "<group>"; };
+		188F02B8200DF4C100BE5F60 /* DeviceDataLibrery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceDataLibrery.h; sourceTree = "<group>"; };
+		188F02B9200DF4C100BE5F60 /* DeviceDataLibrery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceDataLibrery.m; sourceTree = "<group>"; };
+		188F02BA200DF4C100BE5F60 /* DeviceInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceInfoManager.h; sourceTree = "<group>"; };
+		188F02BB200DF4C100BE5F60 /* DeviceInfoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceInfoManager.m; sourceTree = "<group>"; };
+		188F02BC200DF4C100BE5F60 /* NetWorkInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetWorkInfoManager.h; sourceTree = "<group>"; };
+		188F02BD200DF4C100BE5F60 /* NetWorkInfoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetWorkInfoManager.m; sourceTree = "<group>"; };
 		44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCUIDeviceRotationTests.m; sourceTree = "<group>"; };
 		711084421DA3AA7500F913D6 /* FBXPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBXPath.h; sourceTree = "<group>"; };
 		711084431DA3AA7500F913D6 /* FBXPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBXPath.m; sourceTree = "<group>"; };
@@ -786,6 +802,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		188F02B5200DF4C100BE5F60 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				188F02B6200DF4C100BE5F60 /* BatteryInfoManager.h */,
+				188F02B7200DF4C100BE5F60 /* BatteryInfoManager.m */,
+				188F02B8200DF4C100BE5F60 /* DeviceDataLibrery.h */,
+				188F02B9200DF4C100BE5F60 /* DeviceDataLibrery.m */,
+				188F02BA200DF4C100BE5F60 /* DeviceInfoManager.h */,
+				188F02BB200DF4C100BE5F60 /* DeviceInfoManager.m */,
+				188F02BC200DF4C100BE5F60 /* NetWorkInfoManager.h */,
+				188F02BD200DF4C100BE5F60 /* NetWorkInfoManager.m */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
 		498495C81BB2E6FA009CC848 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -999,6 +1030,7 @@
 		EE9AB78E1CAEDF0C008C271F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				188F02B5200DF4C100BE5F60 /* Tools */,
 				71A7EAF71E224648001DA4F2 /* FBClassChainQueryParser.h */,
 				71A7EAF81E224648001DA4F2 /* FBClassChainQueryParser.m */,
 				EE9B76A11CF7A43900275851 /* FBConfiguration.h */,
@@ -1319,6 +1351,7 @@
 				EEE376451D59F81400ED88DD /* XCUIElement+FBUtilities.h in Headers */,
 				EE158AB21CBD456F00A3E3F0 /* XCUIElement+FBScrolling.h in Headers */,
 				EE35AD361E3B77D600A02D78 /* XCSourceCodeTreeNode.h in Headers */,
+				188F02C2200DF4C200BE5F60 /* DeviceInfoManager.h in Headers */,
 				EE35AD341E3B77D600A02D78 /* XCPointerEventPath.h in Headers */,
 				EE158AE11CBD456F00A3E3F0 /* FBRouteRequest.h in Headers */,
 				EE35AD401E3B77D600A02D78 /* XCTest.h in Headers */,
@@ -1405,7 +1438,9 @@
 				EE158AC21CBD456F00A3E3F0 /* FBInspectorCommands.h in Headers */,
 				EE158AF91CBD456F00A3E3F0 /* FBApplicationProcessProxy.h in Headers */,
 				EE35AD671E3B77D600A02D78 /* XCTWaiterDelegatePrivate-Protocol.h in Headers */,
+				188F02C0200DF4C200BE5F60 /* DeviceDataLibrery.h in Headers */,
 				EE35AD4D1E3B77D600A02D78 /* XCTestManager_IDEInterface-Protocol.h in Headers */,
+				188F02C4200DF4C200BE5F60 /* NetWorkInfoManager.h in Headers */,
 				711084441DA3AA7500F913D6 /* FBXPath.h in Headers */,
 				EE35AD771E3B77D600A02D78 /* XCUIRecorderTimingMessage.h in Headers */,
 				EE35AD271E3B77D600A02D78 /* XCApplicationMonitor.h in Headers */,
@@ -1423,6 +1458,7 @@
 				EE158ACE1CBD456F00A3E3F0 /* FBCommandHandler.h in Headers */,
 				EE158AC81CBD456F00A3E3F0 /* FBSessionCommands.h in Headers */,
 				EE158AE31CBD456F00A3E3F0 /* FBSession-Private.h in Headers */,
+				188F02BE200DF4C200BE5F60 /* BatteryInfoManager.h in Headers */,
 				716E0BCE1E917E810087A825 /* NSString+FBXMLSafeString.h in Headers */,
 				EE158ACF1CBD456F00A3E3F0 /* FBCommandStatus.h in Headers */,
 				EE35AD2D1E3B77D600A02D78 /* XCElementSnapshot.h in Headers */,
@@ -1753,6 +1789,7 @@
 				711084451DA3AA7500F913D6 /* FBXPath.m in Sources */,
 				EE158AE71CBD456F00A3E3F0 /* FBWebServer.m in Sources */,
 				EE3A18631CDE618F00DE4205 /* FBErrorBuilder.m in Sources */,
+				188F02C5200DF4C200BE5F60 /* NetWorkInfoManager.m in Sources */,
 				71A7EAF61E20516B001DA4F2 /* XCUIElement+FBClassChain.m in Sources */,
 				71555A3E1DEC460A007D4A8B /* NSExpression+FBFormat.m in Sources */,
 				EE158AF21CBD456F00A3E3F0 /* FBXPathCreator.m in Sources */,
@@ -1764,6 +1801,7 @@
 				EE158AB11CBD456F00A3E3F0 /* XCUIElement+FBIsVisible.m in Sources */,
 				EEBBD48C1D47746D00656A81 /* XCUIElement+FBFind.m in Sources */,
 				EE158ADD1CBD456F00A3E3F0 /* FBResponsePayload.m in Sources */,
+				188F02BF200DF4C200BE5F60 /* BatteryInfoManager.m in Sources */,
 				EE158ADF1CBD456F00A3E3F0 /* FBRoute.m in Sources */,
 				EE0D1F621EBCDCF7006A3123 /* NSString+FBVisualLength.m in Sources */,
 				EEE9B4731CD02B88009D2030 /* FBRunLoopSpinner.m in Sources */,
@@ -1787,10 +1825,12 @@
 				EEE376461D59F81400ED88DD /* XCUIElement+FBUtilities.m in Sources */,
 				EE9B76A91CF7A43900275851 /* FBLogger.m in Sources */,
 				EE158ABB1CBD456F00A3E3F0 /* FBCustomCommands.m in Sources */,
+				188F02C3200DF4C200BE5F60 /* DeviceInfoManager.m in Sources */,
 				AD6C26991CF2481700F8B5FF /* XCUIDevice+FBHelpers.m in Sources */,
 				EE6B64FE1D0F86EF00E85F5D /* XCTestPrivateSymbols.m in Sources */,
 				AD76723E1D6B7CC000610457 /* XCUIElement+FBTyping.m in Sources */,
 				EE158AAF1CBD456F00A3E3F0 /* XCUIElement+FBAccessibility.m in Sources */,
+				188F02C1200DF4C200BE5F60 /* DeviceDataLibrery.m in Sources */,
 				EE158AE51CBD456F00A3E3F0 /* FBSession.m in Sources */,
 				EE158AC11CBD456F00A3E3F0 /* FBFindElementCommands.m in Sources */,
 				188E876E1F4AC4AA00D88C91 /* UUElementCommands.m in Sources */,

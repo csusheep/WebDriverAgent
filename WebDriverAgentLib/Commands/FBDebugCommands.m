@@ -76,9 +76,10 @@ static NSString *const SOURCE_FORMAT_DESCRIPTION = @"description";
   FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
   FBAlert *alert = [FBAlert alertWithApplication:application];
   NSError *error;
-  
-  if (alert.isPresent) {
+
+  while (alert.isPresent) {
     [alert acceptWithError:&error];
+    alert = [FBAlert alertWithApplication:application];
   }
 
   return FBResponseWithObject(application.fb_accessibilityTree ?: @{});

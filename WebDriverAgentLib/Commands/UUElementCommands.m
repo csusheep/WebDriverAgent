@@ -45,6 +45,7 @@
 
 #import "FBXPath.h"
 #import "XCUIApplication+FBHelpers.h"
+#import "DeviceInfoManager.h"
 
 @interface UUElementCommands ()
 
@@ -65,12 +66,36 @@
     [[FBRoute POST:@"/uusense/dragfromtoforduration"] respondWithTarget:self action:@selector(uuHandleDragCoordinate:)],
     [[FBRoute GET:@"/uusense/ssid"].withoutSession respondWithTarget:self action:@selector(uuGetSSID:)],
     [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
-    [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)]
+    [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
+    [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)]
   ];
 }
 
 
 #pragma mark - Commands
+
++ (id<FBResponsePayload>)uuGetSysInfo:(FBRouteRequest *)request
+{
+  float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
+  
+  int64_t totalMem = [[DeviceInfoManager sharedManager] getTotalMemory];
+  int64_t usedMem = [[DeviceInfoManager sharedManager] getUsedMemory];
+  int64_t freeMem = [[DeviceInfoManager sharedManager] getFreeMemory];
+  
+  NSString *totalMemStr = [NSString stringWithFormat:@"%.2f MB ", totalMem/1024/1024.0];
+  NSString *usedMemStr = [NSString stringWithFormat:@"%.2f MB ", usedMem/1024/1024.0];
+  NSString *freeMemStr = [NSString stringWithFormat:@"%.2f MB ", freeMem/1024/1024.0];
+  
+  NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+  [dic setObject:@(cpuUsage) forKey:@"cpuUsage"];
+  [dic setObject:totalMemStr forKey:@"totalMemStr"];
+  [dic setObject:usedMemStr forKey:@"usedMemStr"];
+  [dic setObject:freeMemStr forKey:@"freeMemStr"];
+  
+  NSMutableArray *result = [NSMutableArray array];
+  [result addObject:dic];
+  return FBResponseWithObject(result);
+}
 
 + (id<FBResponsePayload>)handleAPPList:(FBRouteRequest *)request
 {
