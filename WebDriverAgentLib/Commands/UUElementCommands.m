@@ -92,9 +92,7 @@
   [dic setObject:usedMemStr forKey:@"usedMemStr"];
   [dic setObject:freeMemStr forKey:@"freeMemStr"];
   
-  NSMutableArray *result = [NSMutableArray array];
-  [result addObject:dic];
-  return FBResponseWithObject(result);
+  return FBResponseWithObject(dic);
 }
 
 + (id<FBResponsePayload>)handleAPPList:(FBRouteRequest *)request
