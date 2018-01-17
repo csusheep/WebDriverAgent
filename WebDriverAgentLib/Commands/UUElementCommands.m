@@ -47,6 +47,9 @@
 #import "XCUIApplication+FBHelpers.h"
 #import "DeviceInfoManager.h"
 
+#import<sys/sysctl.h>
+#import<mach/mach.h>
+
 @interface UUElementCommands ()
 
 @end
@@ -76,22 +79,34 @@
 
 + (id<FBResponsePayload>)uuGetSysInfo:(FBRouteRequest *)request
 {
-  float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
   
+  vm_statistics_data_t vmStats;
+  mach_msg_type_number_t infoCount = HOST_VM_INFO_COUNT;
+  kern_return_t kernReturn = host_statistics(mach_host_self(),
+                                             HOST_VM_INFO,
+                                             (host_info_t)&vmStats,
+                                             &infoCount);
+  
+  if (kernReturn != KERN_SUCCESS) {
+    
+  }
+
+  float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
+
   int64_t totalMem = [[DeviceInfoManager sharedManager] getTotalMemory];
   int64_t usedMem = [[DeviceInfoManager sharedManager] getUsedMemory];
-  int64_t freeMem = [[DeviceInfoManager sharedManager] getFreeMemory];
-  
-  NSString *totalMemStr = [NSString stringWithFormat:@"%.2f MB ", totalMem/1024/1024.0];
-  NSString *usedMemStr = [NSString stringWithFormat:@"%.2f MB ", usedMem/1024/1024.0];
-  NSString *freeMemStr = [NSString stringWithFormat:@"%.2f MB ", freeMem/1024/1024.0];
-  
+  double freeMem = vm_page_size *vmStats.free_count;
+
+  NSString *totalMemStr = [NSString stringWithFormat:@"%.2f MB ", totalMem/1024.0/1024.0];
+  NSString *usedMemStr = [NSString stringWithFormat:@"%.2f MB ", usedMem/1024.0/1024.0];
+  NSString *freeMemStr = [NSString stringWithFormat:@"%.2f MB ", freeMem/1024.0/1024.0];
+
   NSMutableDictionary *dic = [NSMutableDictionary dictionary];
   [dic setObject:@(cpuUsage) forKey:@"cpuUsage"];
   [dic setObject:totalMemStr forKey:@"totalMemStr"];
   [dic setObject:usedMemStr forKey:@"usedMemStr"];
   [dic setObject:freeMemStr forKey:@"freeMemStr"];
-  
+
   return FBResponseWithObject(dic);
 }
 
