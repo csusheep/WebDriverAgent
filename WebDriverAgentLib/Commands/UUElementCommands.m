@@ -94,18 +94,18 @@
   float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
 
   int64_t totalMem = [[DeviceInfoManager sharedManager] getTotalMemory];
-  int64_t usedMem = [[DeviceInfoManager sharedManager] getUsedMemory];
   double freeMem = vm_page_size *vmStats.free_count;
+  int64_t freeDisk = [[DeviceInfoManager sharedManager] getFreeDiskSpace];
 
   NSString *totalMemStr = [NSString stringWithFormat:@"%.2f MB ", totalMem/1024.0/1024.0];
-  NSString *usedMemStr = [NSString stringWithFormat:@"%.2f MB ", usedMem/1024.0/1024.0];
   NSString *freeMemStr = [NSString stringWithFormat:@"%.2f MB ", freeMem/1024.0/1024.0];
+  NSString *freeDiskStr = [NSString stringWithFormat:@"%.2f MB ", freeDisk/1024.0/1024.0];
 
   NSMutableDictionary *dic = [NSMutableDictionary dictionary];
   [dic setObject:@(cpuUsage) forKey:@"cpuUsage"];
-  [dic setObject:totalMemStr forKey:@"totalMemStr"];
-  [dic setObject:usedMemStr forKey:@"usedMemStr"];
-  [dic setObject:freeMemStr forKey:@"freeMemStr"];
+  [dic setObject:totalMemStr forKey:@"totalMem"];
+  [dic setObject:freeDiskStr forKey:@"freeDisk"];
+  [dic setObject:freeMemStr forKey:@"freeMem"];
 
   return FBResponseWithObject(dic);
 }
