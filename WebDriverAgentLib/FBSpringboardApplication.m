@@ -22,6 +22,8 @@
 #import "XCUIElement.h"
 #import "XCUIElementQuery.h"
 
+NSString *const SPRINGBOARD_BUNDLE_ID = @"com.apple.springboard";
+
 @implementation FBSpringboardApplication
 
 + (instancetype)fb_springboard
@@ -29,7 +31,7 @@
   static FBSpringboardApplication *_springboardApp;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    _springboardApp = [[FBSpringboardApplication alloc] initPrivateWithPath:nil bundleID:@"com.apple.springboard"];
+    _springboardApp = [[FBSpringboardApplication alloc] initPrivateWithPath:nil bundleID:SPRINGBOARD_BUNDLE_ID];
   });
   [_springboardApp query];
   [_springboardApp resolve];
@@ -99,7 +101,9 @@
 - (BOOL)fb_isApplicationBoardVisible
 {
   [self resolve];
-  return self.otherElements[@"Dock"].fb_isVisible;
+  // the dock (and other icons) don't seem to be consistently reported as
+  // visible. esp on iOS 11 but also on 10.3.3
+  return self.otherElements[@"Dock"].isEnabled;
 }
 
 @end

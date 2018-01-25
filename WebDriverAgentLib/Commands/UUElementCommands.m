@@ -45,6 +45,10 @@
 
 #import "FBXPath.h"
 #import "XCUIApplication+FBHelpers.h"
+#import "DeviceInfoManager.h"
+
+#import<sys/sysctl.h>
+#import<mach/mach.h>
 
 @interface UUElementCommands ()
 
@@ -64,12 +68,48 @@
     [[FBRoute POST:@"/uusense/doubleTap"] respondWithTarget:self action:@selector(uuHandleDoubleTapCoordinate:)],
     [[FBRoute POST:@"/uusense/dragfromtoforduration"] respondWithTarget:self action:@selector(uuHandleDragCoordinate:)],
     [[FBRoute GET:@"/uusense/ssid"].withoutSession respondWithTarget:self action:@selector(uuGetSSID:)],
-    [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)]
+    [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
+    [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
+    [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)]
   ];
 }
 
 
 #pragma mark - Commands
+
++ (id<FBResponsePayload>)uuGetSysInfo:(FBRouteRequest *)request
+{
+  
+  vm_statistics_data_t vmStats;
+  mach_msg_type_number_t infoCount = HOST_VM_INFO_COUNT;
+  kern_return_t kernReturn = host_statistics(mach_host_self(),
+                                             HOST_VM_INFO,
+                                             (host_info_t)&vmStats,
+                                             &infoCount);
+  
+  if (kernReturn != KERN_SUCCESS) {
+    
+  }
+
+  float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
+
+  int64_t totalMem = [[DeviceInfoManager sharedManager] getTotalMemory];
+  double freeMem = vm_page_size *vmStats.free_count;
+  int64_t freeDisk = [[DeviceInfoManager sharedManager] getFreeDiskSpace];
+
+  NSString *totalMemStr = [NSString stringWithFormat:@"%.2f", totalMem/1024.0/1024.0];
+  NSString *freeMemStr = [NSString stringWithFormat:@"%.2f", freeMem/1024.0/1024.0];
+  NSString *freeDiskStr = [NSString stringWithFormat:@"%.2f", freeDisk/1024.0/1024.0];
+
+  NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+  [dic setObject:@(cpuUsage) forKey:@"cpuUsage"];
+  [dic setObject:totalMemStr forKey:@"totalMem"];
+  [dic setObject:freeDiskStr forKey:@"freeDisk"];
+  [dic setObject:freeMemStr forKey:@"freeMem"];
+  [dic setObject:@"MB" forKey:@"memeryUnit"];
+
+  return FBResponseWithObject(dic);
+}
 
 + (id<FBResponsePayload>)handleAPPList:(FBRouteRequest *)request
 {
@@ -85,7 +125,7 @@
   {
     NSString *bundleID = [LSApplicationProxy_class performSelector:@selector(applicationIdentifier)] ?:@"";
     NSString *localizedName = [LSApplicationProxy_class performSelector:@selector(localizedName)] ?:@"";
-    NSString *shortVersionString =  [LSApplicationProxy_class performSelector:@selector(shortVersionString)];
+    NSString *shortVersionString =  [LSApplicationProxy_class performSelector:@selector(shortVersionString)] ?:@"";
     if ([bundleID  isEqual: @""] || [bundleID hasPrefix:@"com.apple."] ) {
       continue;
     }
@@ -144,7 +184,7 @@
   
 
   __block NSError *innerError;
-  [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)()){
+  [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
     [[FBXCTestDaemonsProxy testRunnerProxy] _XCT_synthesizeEvent:event completion:^(NSError *scrollingError) {
       innerError = scrollingError;
       didSucceed = (scrollingError == nil);
@@ -182,7 +222,7 @@
     
     
     __block NSError *innerError;
-    [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)()){
+    [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
       [[FBXCTestDaemonsProxy testRunnerProxy] _XCT_synthesizeEvent:event completion:^(NSError *scrollingError) {
         innerError = scrollingError;
         didSucceed = (scrollingError == nil);
@@ -246,6 +286,17 @@
   CFAbsoluteTime end = CFAbsoluteTimeGetCurrent();
   NSLog(@"time cost: %0.3f", end - start);
   return FBResponseWithObject(result);
+  
+}
+
++ (id<FBResponsePayload>)uuBack:(FBRouteRequest *)request {
+  
+  FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
+  if (application.navigationBars.buttons.count > 0) {
+    [[application.navigationBars.buttons elementBoundByIndex:0] tap];
+    return FBResponseWithOK();
+  }
+  return FBResponseWithErrorFormat(@"Cannot back of the current page");
   
 }
 
