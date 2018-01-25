@@ -71,7 +71,7 @@
     [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
     [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
     [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)]
-  ];
+    ];
 }
 
 
@@ -90,24 +90,26 @@
   if (kernReturn != KERN_SUCCESS) {
     
   }
-
+  
   float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
-
   int64_t totalMem = [[DeviceInfoManager sharedManager] getTotalMemory];
   double freeMem = vm_page_size *vmStats.free_count;
   int64_t freeDisk = [[DeviceInfoManager sharedManager] getFreeDiskSpace];
-
+  NSString *networkTypeStr = [[DeviceInfoManager sharedManager] getNettype];
+  
   NSString *totalMemStr = [NSString stringWithFormat:@"%.2f", totalMem/1024.0/1024.0];
   NSString *freeMemStr = [NSString stringWithFormat:@"%.2f", freeMem/1024.0/1024.0];
   NSString *freeDiskStr = [NSString stringWithFormat:@"%.2f", freeDisk/1024.0/1024.0];
-
+  
+  
   NSMutableDictionary *dic = [NSMutableDictionary dictionary];
   [dic setObject:@(cpuUsage) forKey:@"cpuUsage"];
+  [dic setObject:networkTypeStr forKey:@"networkType"];
   [dic setObject:totalMemStr forKey:@"totalMem"];
   [dic setObject:freeDiskStr forKey:@"freeDisk"];
   [dic setObject:freeMemStr forKey:@"freeMem"];
   [dic setObject:@"MB" forKey:@"memeryUnit"];
-
+  
   return FBResponseWithObject(dic);
 }
 
@@ -170,7 +172,7 @@
   NSTimeInterval duration = [request.arguments[@"duration"] doubleValue];
   XCUICoordinate *endCoordinate = [self.class uuGestureCoordinateWithCoordinate:endPoint application:application shouldApplyOrientationWorkaround:YES];
   XCUICoordinate *startCoordinate = [self.class uuGestureCoordinateWithCoordinate:startPoint application:application shouldApplyOrientationWorkaround:YES];
-    __block BOOL didSucceed = NO;
+  __block BOOL didSucceed = NO;
   CGFloat offset = 0.05f; // Waiting before scrolling helps to make it more stable
   double scrollingTime = duration;
   XCPointerEventPath *touchPath = [[XCPointerEventPath alloc] initForTouchAtPoint:startCoordinate.screenPoint offset:offset];
@@ -182,7 +184,7 @@
   XCSynthesizedEventRecord *event = [[XCSynthesizedEventRecord alloc] initWithName:@"FBScroll" interfaceOrientation:application.interfaceOrientation];
   [event addPointerEventPath:touchPath];
   
-
+  
   __block NSError *innerError;
   [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
     [[FBXCTestDaemonsProxy testRunnerProxy] _XCT_synthesizeEvent:event completion:^(NSError *scrollingError) {
@@ -212,7 +214,7 @@
     
     __block BOOL didSucceed = NO;
     CGFloat offset = 0.1f; // Waiting before scrolling helps to make it more stable
-
+    
     XCPointerEventPath *touchPath = [[XCPointerEventPath alloc] initForTouchAtPoint:tapCoordinate.screenPoint offset:offset];
     offset += 0.05f;
     [touchPath liftUpAtOffset:offset];
