@@ -47,6 +47,8 @@
 #import "XCUIApplication+FBHelpers.h"
 #import "DeviceInfoManager.h"
 
+#import "FBAlert.h"
+
 #import<sys/sysctl.h>
 #import<mach/mach.h>
 
@@ -70,12 +72,28 @@
     [[FBRoute GET:@"/uusense/ssid"].withoutSession respondWithTarget:self action:@selector(uuGetSSID:)],
     [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
     [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
-    [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)]
-    ];
+    [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)],
+    [[FBRoute GET:@"/uusense/alert"].withoutSession respondWithTarget:self action:@selector(uuDealAlert:)]
+  ];
 }
 
 
 #pragma mark - Commands
+
++ (id<FBResponsePayload>)uuDealAlert:(FBRouteRequest *)request {
+  FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
+  FBAlert *alert = [FBAlert alertWithApplication:application];
+  NSError *error;
+  
+  while (alert.isPresent) {
+    [alert acceptWithError:&error];
+    alert = [FBAlert alertWithApplication:application];
+  }
+  if (error) {
+    return FBResponseWithError(error);
+  }
+  return FBResponseWithOK();
+}
 
 + (id<FBResponsePayload>)uuGetSysInfo:(FBRouteRequest *)request
 {
