@@ -6,7 +6,7 @@
 //  Copyright © 2017年 王鹏飞. All rights reserved.
 //
 
-
+#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
 #import "DeviceInfoManager.h"
 #import "sys/utsname.h"
@@ -189,56 +189,59 @@
 
 - (NSString *)getNettype
 {
-  NSString *strNetworkInfo = @"No Network";
-  struct sockaddr_storage zeroAddress;
-  bzero(&zeroAddress,sizeof(zeroAddress)); zeroAddress.ss_len = sizeof(zeroAddress);
-  zeroAddress.ss_family = AF_INET;
-  // Recover reachability flags
-  SCNetworkReachabilityRef defaultRouteReachability = SCNetworkReachabilityCreateWithAddress(NULL,(struct sockaddr *)&zeroAddress);
-  SCNetworkReachabilityFlags flags;
-  //获得连接的标志
-  BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(defaultRouteReachability,&flags);
-  CFRelease(defaultRouteReachability);
-  //如果不能获取连接标志，则不能连接网络，直接返回
-  if(!didRetrieveFlags){ return strNetworkInfo;}
-  BOOL isReachable = ((flags & kSCNetworkFlagsReachable)!=0);
-  BOOL needsConnection = ((flags & kSCNetworkFlagsConnectionRequired)!=0);
-  if(!isReachable || needsConnection) {return strNetworkInfo;}
-  // 网络类型判断
-  if((flags & kSCNetworkReachabilityFlagsConnectionRequired)== 0){
-    strNetworkInfo = @"WIFI";
-  }
-  if(((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) ||(flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0) {
-    if ((flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0){
-      strNetworkInfo = @"WIFI";
-    }
-  }
-  if ((flags & kSCNetworkReachabilityFlagsIsWWAN) ==kSCNetworkReachabilityFlagsIsWWAN) {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-      CTTelephonyNetworkInfo * info = [[CTTelephonyNetworkInfo alloc] init];
-      NSString *currentRadioAccessTechnology = info.currentRadioAccessTechnology;
-      if (currentRadioAccessTechnology) {
-        if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyLTE]) {
-          strNetworkInfo =@"4G";
-        } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyEdge] || [currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS]) {
-          strNetworkInfo =@"2G";
-        } else {
-          strNetworkInfo =@"3G";
+
+    UIApplication *app = [UIApplication sharedApplication];
+    id statusBar = [app valueForKeyPath:@"statusBar"];
+    NSString *network = @"";
+    
+    if ([[[DeviceDataLibrery sharedLibrery] getDiviceName] isEqualToString:@"iPhone X"]) {
+      //        iPhone X
+      id statusBarView = [statusBar valueForKeyPath:@"statusBar"];
+      UIView *foregroundView = [statusBarView valueForKeyPath:@"foregroundView"];
+      
+      NSArray *subviews = [[foregroundView subviews][2] subviews];
+      
+      for (id subview in subviews) {
+        if ([subview isKindOfClass:NSClassFromString(@"_UIStatusBarWifiSignalView")]) {
+          network = @"WIFI";
+        }else if ([subview isKindOfClass:NSClassFromString(@"_UIStatusBarStringView")]) {
+          network = [subview valueForKeyPath:@"originalText"];
         }
       }
-    } else {
-      if((flags & kSCNetworkReachabilityFlagsReachable) == kSCNetworkReachabilityFlagsReachable) {
-        if ((flags & kSCNetworkReachabilityFlagsTransientConnection) == kSCNetworkReachabilityFlagsTransientConnection) {
-          if((flags & kSCNetworkReachabilityFlagsConnectionRequired) == kSCNetworkReachabilityFlagsConnectionRequired) {
-            strNetworkInfo =@"2G";
-          } else {
-            strNetworkInfo =@"3G";
+    }else {
+      //        非 iPhone X
+      UIView *foregroundView = [statusBar valueForKeyPath:@"foregroundView"];
+      NSArray *subviews = [foregroundView subviews];
+      
+      for (id subview in subviews) {
+        if ([subview isKindOfClass:NSClassFromString(@"UIStatusBarDataNetworkItemView")]) {
+          int networkType = [[subview valueForKeyPath:@"dataNetworkType"] intValue];
+          switch (networkType) {
+            case 0:
+              network = @"无网络连接";
+              break;
+            case 1:
+              network = @"2G";
+              break;
+            case 2:
+              network = @"3G";
+              break;
+            case 3:
+              network = @"4G";
+              break;
+            case 5:
+              network = @"WIFI";
+              break;
+            default:
+              break;
           }
         }
       }
     }
-  }
-  return strNetworkInfo;
+    if ([network isEqualToString:@""]) {
+      network = @"NO DISPLAY";
+    }
+    return network;
 }
 
 
