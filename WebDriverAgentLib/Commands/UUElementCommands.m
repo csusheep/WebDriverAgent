@@ -77,7 +77,8 @@
     [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
     [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
     [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)],
-    [[FBRoute GET:@"/uusense/alert"].withoutSession respondWithTarget:self action:@selector(uuDealAlert:)]
+    [[FBRoute GET:@"/uusense/alert"].withoutSession respondWithTarget:self action:@selector(uuDealAlert:)],
+    [[FBRoute POST:@"/uusense/homescreen"].withoutSession respondWithTarget:self action:@selector(handleHomescreenCommand:)]
   ];
 }
 
@@ -182,7 +183,7 @@
   CGPoint startPoint = CGPointMake((CGFloat)[request.arguments[@"fromX"] doubleValue], (CGFloat)[request.arguments[@"fromY"] doubleValue]);
   CGPoint endPoint = CGPointMake((CGFloat)[request.arguments[@"toX"] doubleValue], (CGFloat)[request.arguments[@"toY"] doubleValue]);
   NSTimeInterval duration = [request.arguments[@"duration"] doubleValue];
-  CGFloat velocity = [request.arguments[@"velocity"] doubleValue];
+  CGFloat velocity = [request.arguments[@"velocity"] floatValue];
   
   [[XCEventGenerator sharedGenerator] pressAtPoint:startPoint forDuration:duration liftAtPoint:endPoint velocity:velocity orientation:UIInterfaceOrientationPortrait name:@"uuHandleDrag" handler:^(XCSynthesizedEventRecord *record, NSError *error) {}];
  
@@ -256,6 +257,11 @@
   }
   return FBResponseWithErrorFormat(@"Cannot back of the current page");
   
+}
+
++ (id<FBResponsePayload>)handleHomescreenCommand:(FBRouteRequest *)request {
+  [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
+  return FBResponseWithOK();
 }
 
 
