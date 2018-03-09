@@ -6,7 +6,7 @@
 //  Copyright © 2017年 王鹏飞. All rights reserved.
 //
 
-
+#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
 #import "DeviceInfoManager.h"
 #import "sys/utsname.h"
@@ -38,7 +38,7 @@
 //#include <ifaddrs.h>
 
 #import "DeviceDataLibrery.h"
-#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+
 @implementation DeviceInfoManager
 
 + (instancetype)sharedManager {
@@ -189,11 +189,12 @@
 
 - (NSString *)getNettype
 {
+
     UIApplication *app = [UIApplication sharedApplication];
     id statusBar = [app valueForKeyPath:@"statusBar"];
     NSString *network = @"";
     
-    if (KIsiPhoneX) {
+    if ([[[DeviceDataLibrery sharedLibrery] getDiviceName] isEqualToString:@"iPhone X"]) {
       //        iPhone X
       id statusBarView = [statusBar valueForKeyPath:@"statusBar"];
       UIView *foregroundView = [statusBarView valueForKeyPath:@"foregroundView"];
