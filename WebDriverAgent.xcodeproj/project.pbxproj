@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1821993C205575870075D7E8 /* UUMonkeySingleton.h in Headers */ = {isa = PBXBuildFile; fileRef = 1821993A205575870075D7E8 /* UUMonkeySingleton.h */; };
+		1821993D205575870075D7E8 /* UUMonkeySingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1821993B205575870075D7E8 /* UUMonkeySingleton.m */; };
+		182E3CFD2052783400566DD2 /* UUMonkey.h in Headers */ = {isa = PBXBuildFile; fileRef = 182E3CF72052783400566DD2 /* UUMonkey.h */; };
+		182E3CFE2052783400566DD2 /* UUMonkey.m in Sources */ = {isa = PBXBuildFile; fileRef = 182E3CF82052783400566DD2 /* UUMonkey.m */; };
+		182E3CFF2052783400566DD2 /* UUMonkeyXCTestPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 182E3CF92052783400566DD2 /* UUMonkeyXCTestPrivate.h */; };
+		182E3D002052783400566DD2 /* UUMonkeyXCTestPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 182E3CFA2052783400566DD2 /* UUMonkeyXCTestPrivate.m */; };
+		182E3D012052783400566DD2 /* UURandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 182E3CFB2052783400566DD2 /* UURandom.h */; };
+		182E3D022052783400566DD2 /* UURandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 182E3CFC2052783400566DD2 /* UURandom.m */; };
 		188E876D1F4AC4AA00D88C91 /* UUElementCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 188E876B1F4AC4AA00D88C91 /* UUElementCommands.h */; };
 		188E876E1F4AC4AA00D88C91 /* UUElementCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 188E876C1F4AC4AA00D88C91 /* UUElementCommands.m */; };
 		188F02BE200DF4C200BE5F60 /* BatteryInfoManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 188F02B6200DF4C100BE5F60 /* BatteryInfoManager.h */; };
@@ -411,6 +419,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1821993A205575870075D7E8 /* UUMonkeySingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UUMonkeySingleton.h; sourceTree = "<group>"; };
+		1821993B205575870075D7E8 /* UUMonkeySingleton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UUMonkeySingleton.m; sourceTree = "<group>"; };
+		182E3CF72052783400566DD2 /* UUMonkey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUMonkey.h; sourceTree = "<group>"; };
+		182E3CF82052783400566DD2 /* UUMonkey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMonkey.m; sourceTree = "<group>"; };
+		182E3CF92052783400566DD2 /* UUMonkeyXCTestPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUMonkeyXCTestPrivate.h; sourceTree = "<group>"; };
+		182E3CFA2052783400566DD2 /* UUMonkeyXCTestPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMonkeyXCTestPrivate.m; sourceTree = "<group>"; };
+		182E3CFB2052783400566DD2 /* UURandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UURandom.h; sourceTree = "<group>"; };
+		182E3CFC2052783400566DD2 /* UURandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UURandom.m; sourceTree = "<group>"; };
 		188E876B1F4AC4AA00D88C91 /* UUElementCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUElementCommands.h; sourceTree = "<group>"; };
 		188E876C1F4AC4AA00D88C91 /* UUElementCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUElementCommands.m; sourceTree = "<group>"; };
 		188F02B6200DF4C100BE5F60 /* BatteryInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryInfoManager.h; sourceTree = "<group>"; };
@@ -810,6 +826,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		182E3CF62052783400566DD2 /* UUMonkey */ = {
+			isa = PBXGroup;
+			children = (
+				182E3CF72052783400566DD2 /* UUMonkey.h */,
+				182E3CF82052783400566DD2 /* UUMonkey.m */,
+				182E3CF92052783400566DD2 /* UUMonkeyXCTestPrivate.h */,
+				182E3CFA2052783400566DD2 /* UUMonkeyXCTestPrivate.m */,
+				182E3CFB2052783400566DD2 /* UURandom.h */,
+				182E3CFC2052783400566DD2 /* UURandom.m */,
+				1821993A205575870075D7E8 /* UUMonkeySingleton.h */,
+				1821993B205575870075D7E8 /* UUMonkeySingleton.m */,
+			);
+			path = UUMonkey;
+			sourceTree = "<group>";
+		};
 		188F02B5200DF4C100BE5F60 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
@@ -1200,6 +1231,7 @@
 		EEC288F81BF0ED2500B4DC79 /* WebDriverAgentLib */ = {
 			isa = PBXGroup;
 			children = (
+				182E3CF62052783400566DD2 /* UUMonkey */,
 				EE9AB73E1CAEDF0C008C271F /* Categories */,
 				EE9AB74F1CAEDF0C008C271F /* Commands */,
 				EE9AB7721CAEDF0C008C271F /* Resources */,
@@ -1378,6 +1410,7 @@
 				EE35AD611E3B77D600A02D78 /* XCTRunnerIDESession.h in Headers */,
 				EE158AE01CBD456F00A3E3F0 /* FBRouteRequest-Private.h in Headers */,
 				EE35AD621E3B77D600A02D78 /* XCTTestRunSession.h in Headers */,
+				182E3CFD2052783400566DD2 /* UUMonkey.h in Headers */,
 				EE35AD541E3B77D600A02D78 /* XCTestProbe.h in Headers */,
 				EE35AD281E3B77D600A02D78 /* XCApplicationQuery.h in Headers */,
 				EE35AD3C1E3B77D600A02D78 /* XCTAsyncActivity.h in Headers */,
@@ -1415,6 +1448,7 @@
 				71555A3D1DEC460A007D4A8B /* NSExpression+FBFormat.h in Headers */,
 				EE35AD0C1E3B77D600A02D78 /* _XCTestCaseImplementation.h in Headers */,
 				EE35AD211E3B77D600A02D78 /* UIPinchGestureRecognizer-RecordingAdditions.h in Headers */,
+				182E3D012052783400566DD2 /* UURandom.h in Headers */,
 				EE35AD4F1E3B77D600A02D78 /* XCTestManager_TestsInterface-Protocol.h in Headers */,
 				EE35AD2B1E3B77D600A02D78 /* XCDeviceEvent.h in Headers */,
 				EE18883A1DA661C400307AA8 /* FBMathUtils.h in Headers */,
@@ -1468,6 +1502,7 @@
 				71B49EC71ED1A58100D51AD6 /* XCUIElement+FBUID.h in Headers */,
 				EE35AD381E3B77D600A02D78 /* XCSymbolicationRecord.h in Headers */,
 				EE35AD6E1E3B77D600A02D78 /* XCUIDevice.h in Headers */,
+				182E3CFF2052783400566DD2 /* UUMonkeyXCTestPrivate.h in Headers */,
 				EE158ACE1CBD456F00A3E3F0 /* FBCommandHandler.h in Headers */,
 				EE158AC81CBD456F00A3E3F0 /* FBSessionCommands.h in Headers */,
 				EE158AE31CBD456F00A3E3F0 /* FBSession-Private.h in Headers */,
@@ -1532,6 +1567,7 @@
 				EE35AD4E1E3B77D600A02D78 /* XCTestManager_ManagerInterface-Protocol.h in Headers */,
 				EE6A893A1D0B38640083E92B /* FBFailureProofTestCase.h in Headers */,
 				EE35AD631E3B77D600A02D78 /* XCTTestRunSessionDelegate-Protocol.h in Headers */,
+				1821993C205575870075D7E8 /* UUMonkeySingleton.h in Headers */,
 				EE35AD431E3B77D600A02D78 /* XCTestCaseSuite.h in Headers */,
 				EE35AD091E3B77D600A02D78 /* _XCInternalTestRun.h in Headers */,
 				712A0C871DA3E55D007D02E5 /* FBXPath-Private.h in Headers */,
@@ -1833,6 +1869,7 @@
 				EE158ABD1CBD456F00A3E3F0 /* FBDebugCommands.m in Sources */,
 				716E0BCF1E917E810087A825 /* NSString+FBXMLSafeString.m in Sources */,
 				EE158ACD1CBD456F00A3E3F0 /* FBUnknownCommands.m in Sources */,
+				182E3D022052783400566DD2 /* UURandom.m in Sources */,
 				EE158AC51CBD456F00A3E3F0 /* FBOrientationCommands.m in Sources */,
 				EEC9EED720064FAA00BC0D5B /* XCUICoordinate+FBFix.m in Sources */,
 				EE158AEB1CBD456F00A3E3F0 /* FBRuntimeUtils.m in Sources */,
@@ -1851,18 +1888,21 @@
 				EE7E271D1D06C69F001BEC7B /* FBDebugLogDelegateDecorator.m in Sources */,
 				EE158AB91CBD456F00A3E3F0 /* FBAlertViewCommands.m in Sources */,
 				EE158AB31CBD456F00A3E3F0 /* XCUIElement+FBScrolling.m in Sources */,
+				1821993D205575870075D7E8 /* UUMonkeySingleton.m in Sources */,
 				EE158AC91CBD456F00A3E3F0 /* FBSessionCommands.m in Sources */,
 				EE158AC31CBD456F00A3E3F0 /* FBInspectorCommands.m in Sources */,
 				EE006EB11EBA1AA9006900A4 /* XCElementSnapshot+FBHitPoint.m in Sources */,
 				EE9B76A71CF7A43900275851 /* FBConfiguration.m in Sources */,
 				EE158AD31CBD456F00A3E3F0 /* FBElementCache.m in Sources */,
 				AD6C26951CF2379700F8B5FF /* FBAlert.m in Sources */,
+				182E3D002052783400566DD2 /* UUMonkeyXCTestPrivate.m in Sources */,
 				EE158ABF1CBD456F00A3E3F0 /* FBElementCommands.m in Sources */,
 				EE158AD51CBD456F00A3E3F0 /* FBExceptionHandler.m in Sources */,
 				EE5A24421F136D360078B1D9 /* FBXCodeCompatibility.m in Sources */,
 				EEE376421D59F81400ED88DD /* XCElementSnapshot+FBHelpers.m in Sources */,
 				EE158AE91CBD456F00A3E3F0 /* FBElementTypeTransformer.m in Sources */,
 				EE158AF61CBD456F00A3E3F0 /* FBApplication.m in Sources */,
+				182E3CFE2052783400566DD2 /* UUMonkey.m in Sources */,
 				EE35AD7C1E3B80C000A02D78 /* FBXCTestDaemonsProxy.m in Sources */,
 				EE158AB51CBD456F00A3E3F0 /* XCUIElement+FBTap.m in Sources */,
 				EE18883B1DA661C400307AA8 /* FBMathUtils.m in Sources */,

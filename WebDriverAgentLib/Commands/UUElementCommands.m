@@ -42,7 +42,6 @@
 #import "FBXCTestDaemonsProxy.h"
 #import "XCTestManager_ManagerInterface-Protocol.h"
 #import "XCUIDevice+FBHelpers.h"
-
 #import "XCEventGenerator.h"
 
 #import "FBXPath.h"
@@ -51,10 +50,16 @@
 
 #import "FBAlert.h"
 
+#import "UUMonkey.h"
+#import "UUMonkeyXCTestPrivate.h"
+#import "UUMonkeySingleton.h"
+
 #import<sys/sysctl.h>
 #import<mach/mach.h>
 
 #import <ReplayKit/ReplayKit.h>
+
+static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 
 @interface UUElementCommands ()
 
@@ -78,7 +83,9 @@
     [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
     [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)],
     [[FBRoute GET:@"/uusense/alert"].withoutSession respondWithTarget:self action:@selector(uuDealAlert:)],
-    [[FBRoute POST:@"/uusense/homescreen"].withoutSession respondWithTarget:self action:@selector(handleHomescreenCommand:)]
+    [[FBRoute POST:@"/uusense/homescreen"].withoutSession respondWithTarget:self action:@selector(handleHomescreenCommand:)],
+    [[FBRoute POST:@"/uusense/monkey"].withoutSession respondWithTarget:self action:@selector(handleMonkeyCommand:)],
+    [[FBRoute POST:@"/uusense/activeTestingApp"].withoutSession respondWithTarget:self action:@selector(handleActiveTestingAppCommand:)]
   ];
 }
 
@@ -261,6 +268,32 @@
 
 + (id<FBResponsePayload>)handleHomescreenCommand:(FBRouteRequest *)request {
   [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
+  return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)handleMonkeyCommand:(FBRouteRequest *)request {
+  XCUIApplication *application = [UUMonkeySingleton sharedInstance].application;
+  NSInteger monkeyIterations = [request.arguments[@"monkeyIterations"] integerValue];
+  if (application == nil) {
+    return FBResponseWithErrorFormat(@"Cannot get the current application");
+  }
+  UUMonkey *monkey = [[UUMonkey alloc] initWithFrame:application.frame];
+  monkey.application = (XCUIApplication *)application;
+  [monkey addDefaultXCTestPrivateActions];
+  [monkey monkeyAroundWithIterations:monkeyIterations];
+  return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)handleActiveTestingAppCommand:(FBRouteRequest *)request {
+  XCUIApplication *application = [UUMonkeySingleton sharedInstance].application;
+  if (application == nil) {
+    return FBResponseWithErrorFormat(@"Cannot get the current application");
+  }
+  if (application.state != XCUIApplicationStateRunningForeground ) {
+    [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:UUHomeButtonCoolOffTime]];
+    [application activate];
+  }
   return FBResponseWithOK();
 }
 

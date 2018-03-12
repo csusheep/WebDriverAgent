@@ -20,6 +20,8 @@
 #import "XCUIDevice+FBHealthCheck.h"
 #import "XCUIDevice+FBHelpers.h"
 
+#import "UUMonkeySingleton.h"
+
 @implementation FBSessionCommands
 
 #pragma mark - <FBCommandHandler>
@@ -90,6 +92,10 @@
     return FBResponseWithErrorFormat(@"Failed to launch %@ application", bundleID);
   }
   [FBSession sessionWithApplication:app];
+  
+  /* record the latest started application */
+  [UUMonkeySingleton sharedInstance].application = app;
+  
   return FBResponseWithObject(FBSessionCommands.sessionInformation);
 }
 
