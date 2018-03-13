@@ -181,7 +181,12 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 
 + (id<FBResponsePayload>)uuHandleTouchAndHoldCoordinate:(FBRouteRequest *)request {
   CGPoint touchPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
-  [[XCEventGenerator sharedGenerator] pressAtPoint:touchPoint forDuration:[request.arguments[@"duration"] doubleValue] orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {}];
+  double duration = [request.arguments[@"duration"] doubleValue];
+  dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+  [[XCEventGenerator sharedGenerator] pressAtPoint:touchPoint forDuration:[request.arguments[@"duration"] doubleValue] orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+    dispatch_semaphore_signal(sema);
+  }];
+  dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)));
   return FBResponseWithOK();
 }
 
@@ -192,8 +197,15 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   NSTimeInterval duration = [request.arguments[@"duration"] doubleValue];
   CGFloat velocity = [request.arguments[@"velocity"] floatValue];
   
-  [[XCEventGenerator sharedGenerator] pressAtPoint:startPoint forDuration:duration liftAtPoint:endPoint velocity:velocity orientation:UIInterfaceOrientationPortrait name:@"uuHandleDrag" handler:^(XCSynthesizedEventRecord *record, NSError *error) {}];
- 
+  CGFloat deltaX = endPoint.x - startPoint.x;
+  CGFloat deltaY = endPoint.y - startPoint.y;
+  double distance = sqrt(deltaX*deltaX + deltaY*deltaY);
+  double dragTime = distance / velocity;
+  dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+  [[XCEventGenerator sharedGenerator] pressAtPoint:startPoint forDuration:duration liftAtPoint:endPoint velocity:velocity orientation:UIInterfaceOrientationPortrait name:@"uuHandleDrag" handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+    dispatch_semaphore_signal(sema);
+  }];
+  dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)((duration + dragTime) * NSEC_PER_SEC)));
   return FBResponseWithOK();
 }
 
