@@ -301,7 +301,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   if (application == nil) {
     return FBResponseWithErrorFormat(@"Cannot get the current application");
   }
-  if (application.state != XCUIApplicationStateRunningForeground ) {
+  if (application.state != XCUIApplicationStateRunningForeground && application.state != XCUIApplicationStateNotRunning) {
     [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:UUHomeButtonCoolOffTime]];
     [application activate];

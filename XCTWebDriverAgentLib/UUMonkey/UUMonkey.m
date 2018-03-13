@@ -153,7 +153,7 @@
           __weak typeof(self) weakSelf = self;
             ActionClosure closure = ^{
               __strong typeof(self) strongSelf = weakSelf;
-                if (strongSelf.application.state != XCUIApplicationStateRunningForeground ) {
+                if (strongSelf.application.state != XCUIApplicationStateRunningForeground && strongSelf.application.state != XCUIApplicationStateNotRunning) {
                     [strongSelf.application activate];
                 }
                 action();
