@@ -260,10 +260,10 @@ static const NSString *iDeviceNameContainer[] = {
     [American_iPhone_7_Plus]    = @"美版/台版 iPhone 7 Plus",
     [Chinese_iPhone_8]          = @"国行/日版 iPhone 8",
     [Chinese_iPhone_8_Plus]     = @"国行/日版 iPhone 8 Plus",
-    [Chinese_iPhone_X]          = @"国行/日版 iPhone X",
+    [Chinese_iPhone_X]          = @"iPhone X",
     [Global_iPhone_8]           = @"美版(Global) iPhone 8",
     [Global_iPhone_8_Plus]      = @"美版(Global) iPhone 8 Plus",
-    [Global_iPhone_X]           = @"美版(Global) iPhone X",
+    [Global_iPhone_X]           = @"iPhone X",
     
     [iPod_Touch_1G]             = @"iPod Touch 1G",
     [iPod_Touch_2G]             = @"iPod Touch 2G",

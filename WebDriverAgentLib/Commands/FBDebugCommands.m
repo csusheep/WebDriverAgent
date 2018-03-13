@@ -9,7 +9,6 @@
 
 #import "FBDebugCommands.h"
 
-#import "FBAlert.h"
 #import "FBApplication.h"
 #import "FBRouteRequest.h"
 #import "FBSession.h"
@@ -74,14 +73,6 @@ static NSString *const SOURCE_FORMAT_DESCRIPTION = @"description";
 + (id<FBResponsePayload>)handleGetAccessibleSourceCommand:(FBRouteRequest *)request
 {
   FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
-  FBAlert *alert = [FBAlert alertWithApplication:application];
-  NSError *error;
-
-  while (alert.isPresent) {
-    [alert acceptWithError:&error];
-    alert = [FBAlert alertWithApplication:application];
-  }
-
   return FBResponseWithObject(application.fb_accessibilityTree ?: @{});
 }
 

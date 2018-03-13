@@ -39,6 +39,9 @@
 /** 获取当前设备主存 */
 - (NSUInteger)getRamSize;
 
+/** 获取当前设备网络类型 */
+- (NSString *)getNettype;
+
 - (NSString *)getCPUProcessor;
 /** 获取CPU数量 */
 - (NSUInteger)getCPUCount;
@@ -73,3 +76,4 @@
 - (int64_t)getPurgableMemory;
 
 @end
+

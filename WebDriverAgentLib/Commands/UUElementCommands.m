@@ -42,13 +42,24 @@
 #import "FBXCTestDaemonsProxy.h"
 #import "XCTestManager_ManagerInterface-Protocol.h"
 #import "XCUIDevice+FBHelpers.h"
+#import "XCEventGenerator.h"
 
 #import "FBXPath.h"
 #import "XCUIApplication+FBHelpers.h"
 #import "DeviceInfoManager.h"
 
+#import "FBAlert.h"
+
+#import "UUMonkey.h"
+#import "UUMonkeyXCTestPrivate.h"
+#import "UUMonkeySingleton.h"
+
 #import<sys/sysctl.h>
 #import<mach/mach.h>
+
+#import <ReplayKit/ReplayKit.h>
+
+static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 
 @interface UUElementCommands ()
 
@@ -63,19 +74,37 @@
   return
   @[
     [[FBRoute GET:@"/applist"].withoutSession respondWithTarget:self action:@selector(handleAPPList:)],
-    [[FBRoute POST:@"/uusense/tap/:uuid"] respondWithTarget:self action:@selector(uuHandleTap:)],
-    [[FBRoute POST:@"/uusense/touchAndHold"] respondWithTarget:self action:@selector(uuHandleTouchAndHoldCoordinate:)],
+    [[FBRoute POST:@"/uusense/tap"].withoutSession respondWithTarget:self action:@selector(uuHandleTap:)],
+    [[FBRoute POST:@"/uusense/touchAndHold"].withoutSession respondWithTarget:self action:@selector(uuHandleTouchAndHoldCoordinate:)],
     [[FBRoute POST:@"/uusense/doubleTap"] respondWithTarget:self action:@selector(uuHandleDoubleTapCoordinate:)],
-    [[FBRoute POST:@"/uusense/dragfromtoforduration"] respondWithTarget:self action:@selector(uuHandleDragCoordinate:)],
+    [[FBRoute POST:@"/uusense/dragfromtoforduration"].withoutSession respondWithTarget:self action:@selector(uuHandleDragCoordinate:)],
     [[FBRoute GET:@"/uusense/ssid"].withoutSession respondWithTarget:self action:@selector(uuGetSSID:)],
     [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
     [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
-    [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)]
+    [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)],
+    [[FBRoute GET:@"/uusense/alert"].withoutSession respondWithTarget:self action:@selector(uuDealAlert:)],
+    [[FBRoute POST:@"/uusense/homescreen"].withoutSession respondWithTarget:self action:@selector(handleHomescreenCommand:)],
+    [[FBRoute POST:@"/uusense/monkey"].withoutSession respondWithTarget:self action:@selector(handleMonkeyCommand:)],
+    [[FBRoute POST:@"/uusense/activeTestingApp"].withoutSession respondWithTarget:self action:@selector(handleActiveTestingAppCommand:)]
   ];
 }
 
-
 #pragma mark - Commands
+
++ (id<FBResponsePayload>)uuDealAlert:(FBRouteRequest *)request {
+  FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
+  FBAlert *alert = [FBAlert alertWithApplication:application];
+  NSError *error;
+  
+  while (alert.isPresent) {
+    [alert acceptWithError:&error];
+    alert = [FBAlert alertWithApplication:application];
+  }
+  if (error) {
+    return FBResponseWithError(error);
+  }
+  return FBResponseWithOK();
+}
 
 + (id<FBResponsePayload>)uuGetSysInfo:(FBRouteRequest *)request
 {
@@ -90,24 +119,26 @@
   if (kernReturn != KERN_SUCCESS) {
     
   }
-
+  
   float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
-
   int64_t totalMem = [[DeviceInfoManager sharedManager] getTotalMemory];
   double freeMem = vm_page_size *vmStats.free_count;
   int64_t freeDisk = [[DeviceInfoManager sharedManager] getFreeDiskSpace];
-
+  NSString *networkTypeStr = [[DeviceInfoManager sharedManager] getNettype];
+  
   NSString *totalMemStr = [NSString stringWithFormat:@"%.2f", totalMem/1024.0/1024.0];
   NSString *freeMemStr = [NSString stringWithFormat:@"%.2f", freeMem/1024.0/1024.0];
   NSString *freeDiskStr = [NSString stringWithFormat:@"%.2f", freeDisk/1024.0/1024.0];
-
+  
+  
   NSMutableDictionary *dic = [NSMutableDictionary dictionary];
   [dic setObject:@(cpuUsage) forKey:@"cpuUsage"];
+  [dic setObject:networkTypeStr forKey:@"networkType"];
   [dic setObject:totalMemStr forKey:@"totalMem"];
   [dic setObject:freeDiskStr forKey:@"freeDisk"];
   [dic setObject:freeMemStr forKey:@"freeMem"];
   [dic setObject:@"MB" forKey:@"memeryUnit"];
-
+  
   return FBResponseWithObject(dic);
 }
 
@@ -136,12 +167,10 @@
     [result addObject:dic];
   }
 #pragma clang diagnostic pop
-  
   return FBResponseWithObject(result);
 }
 
 + (id<FBResponsePayload>)uuHandleDoubleTapCoordinate:(FBRouteRequest *)request {
-  
   XCUIApplication *application = request.session.uu_application;
   
   CGPoint doubleTapPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
@@ -150,95 +179,44 @@
   return FBResponseWithOK();
 }
 
-
 + (id<FBResponsePayload>)uuHandleTouchAndHoldCoordinate:(FBRouteRequest *)request {
-  
-  XCUIApplication *application = request.session.uu_application;
-  
   CGPoint touchPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
-  XCUICoordinate *pressCoordinate = [self.class uuGestureCoordinateWithCoordinate:touchPoint application:application shouldApplyOrientationWorkaround:YES];
-  [pressCoordinate pressForDuration:[request.arguments[@"duration"] doubleValue]];
+  double duration = [request.arguments[@"duration"] doubleValue];
+  dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+  [[XCEventGenerator sharedGenerator] pressAtPoint:touchPoint forDuration:[request.arguments[@"duration"] doubleValue] orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+    dispatch_semaphore_signal(sema);
+  }];
+  dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)));
   return FBResponseWithOK();
 }
 
 + (id<FBResponsePayload>)uuHandleDragCoordinate:(FBRouteRequest *)request {
   
-  XCUIApplication *application = request.session.uu_application;
-  
   CGPoint startPoint = CGPointMake((CGFloat)[request.arguments[@"fromX"] doubleValue], (CGFloat)[request.arguments[@"fromY"] doubleValue]);
   CGPoint endPoint = CGPointMake((CGFloat)[request.arguments[@"toX"] doubleValue], (CGFloat)[request.arguments[@"toY"] doubleValue]);
   NSTimeInterval duration = [request.arguments[@"duration"] doubleValue];
-  XCUICoordinate *endCoordinate = [self.class uuGestureCoordinateWithCoordinate:endPoint application:application shouldApplyOrientationWorkaround:YES];
-  XCUICoordinate *startCoordinate = [self.class uuGestureCoordinateWithCoordinate:startPoint application:application shouldApplyOrientationWorkaround:YES];
-    __block BOOL didSucceed = NO;
-  CGFloat offset = 0.05f; // Waiting before scrolling helps to make it more stable
-  double scrollingTime = duration;
-  XCPointerEventPath *touchPath = [[XCPointerEventPath alloc] initForTouchAtPoint:startCoordinate.screenPoint offset:offset];
-  offset += MAX(scrollingTime, 0.05f); // Setting Minimum scrolling time to avoid testmanager complaining about timing
-  [touchPath moveToPoint:endCoordinate.screenPoint atOffset:offset];
-  offset += 0.05f;
-  [touchPath liftUpAtOffset:offset];
+  CGFloat velocity = [request.arguments[@"velocity"] floatValue];
   
-  XCSynthesizedEventRecord *event = [[XCSynthesizedEventRecord alloc] initWithName:@"FBScroll" interfaceOrientation:application.interfaceOrientation];
-  [event addPointerEventPath:touchPath];
-  
-
-  __block NSError *innerError;
-  [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
-    [[FBXCTestDaemonsProxy testRunnerProxy] _XCT_synthesizeEvent:event completion:^(NSError *scrollingError) {
-      innerError = scrollingError;
-      didSucceed = (scrollingError == nil);
-      completion();
-    }];
+  CGFloat deltaX = endPoint.x - startPoint.x;
+  CGFloat deltaY = endPoint.y - startPoint.y;
+  double distance = sqrt(deltaX*deltaX + deltaY*deltaY);
+  double dragTime = distance / velocity;
+  dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+  [[XCEventGenerator sharedGenerator] pressAtPoint:startPoint forDuration:duration liftAtPoint:endPoint velocity:velocity orientation:UIInterfaceOrientationPortrait name:@"uuHandleDrag" handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+    dispatch_semaphore_signal(sema);
   }];
-  
-  // Tapping cells immediately after scrolling may fail due to way UIKit is handling touches.
-  // We should wait till scroll view cools off, before continuing
-  [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2f]];
+  dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)((duration + dragTime) * NSEC_PER_SEC)));
   return FBResponseWithOK();
 }
-
 
 
 + (id<FBResponsePayload>)uuHandleTap:(FBRouteRequest *)request {
   
-  XCUIApplication *application = request.session.uu_application;
-  
-  FBElementCache *elementCache = request.session.elementCache;
   CGPoint tapPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
-  XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
-  if (nil == element) {
-    XCUICoordinate *tapCoordinate = [self.class uuGestureCoordinateWithCoordinate:tapPoint application:application shouldApplyOrientationWorkaround:YES];
-    
-    __block BOOL didSucceed = NO;
-    CGFloat offset = 0.1f; // Waiting before scrolling helps to make it more stable
+  [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {}];
 
-    XCPointerEventPath *touchPath = [[XCPointerEventPath alloc] initForTouchAtPoint:tapCoordinate.screenPoint offset:offset];
-    offset += 0.05f;
-    [touchPath liftUpAtOffset:offset];
-    
-    XCSynthesizedEventRecord *event = [[XCSynthesizedEventRecord alloc] initWithName:@"FBScroll" interfaceOrientation:application.interfaceOrientation];
-    [event addPointerEventPath:touchPath];
-    
-    
-    __block NSError *innerError;
-    [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
-      [[FBXCTestDaemonsProxy testRunnerProxy] _XCT_synthesizeEvent:event completion:^(NSError *scrollingError) {
-        innerError = scrollingError;
-        didSucceed = (scrollingError == nil);
-        completion();
-      }];
-    }];
-    
-  } else {
-    NSError *error;
-    if (![element fb_tapCoordinate:tapPoint error:&error]) {
-      return FBResponseWithError(error);
-    }
-  }
   return FBResponseWithOK();
 }
-
 
 + (id<FBResponsePayload>)handleGetWindowSize:(FBRouteRequest *)request {
   
@@ -298,6 +276,37 @@
   }
   return FBResponseWithErrorFormat(@"Cannot back of the current page");
   
+}
+
++ (id<FBResponsePayload>)handleHomescreenCommand:(FBRouteRequest *)request {
+  [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
+  return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)handleMonkeyCommand:(FBRouteRequest *)request {
+  XCUIApplication *application = [UUMonkeySingleton sharedInstance].application;
+  NSInteger monkeyIterations = [request.arguments[@"monkeyIterations"] integerValue];
+  if (application == nil) {
+    return FBResponseWithErrorFormat(@"Cannot get the current application");
+  }
+  UUMonkey *monkey = [[UUMonkey alloc] initWithFrame:application.frame];
+  monkey.application = (XCUIApplication *)application;
+  [monkey addDefaultXCTestPrivateActions];
+  [monkey monkeyAroundWithIterations:monkeyIterations];
+  return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)handleActiveTestingAppCommand:(FBRouteRequest *)request {
+  XCUIApplication *application = [UUMonkeySingleton sharedInstance].application;
+  if (application == nil) {
+    return FBResponseWithErrorFormat(@"Cannot get the current application");
+  }
+  if (application.state != XCUIApplicationStateRunningForeground ) {
+    [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:UUHomeButtonCoolOffTime]];
+    [application activate];
+  }
+  return FBResponseWithOK();
 }
 
 
