@@ -21,4 +21,13 @@
   return instance;
 }
 
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    self.monkey = nil;
+    self.application = nil;
+  }
+  return self;
+}
+
 @end

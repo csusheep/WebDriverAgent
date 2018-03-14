@@ -289,10 +289,13 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   if (application == nil) {
     return FBResponseWithErrorFormat(@"Cannot get the current application");
   }
-  UUMonkey *monkey = [[UUMonkey alloc] initWithFrame:application.frame];
-  monkey.application = (XCUIApplication *)application;
-  [monkey addDefaultXCTestPrivateActions];
-  [monkey monkeyAroundWithIterations:monkeyIterations];
+  if (nil == [UUMonkeySingleton sharedInstance].monkey) {
+    UUMonkey *monkey = [[UUMonkey alloc] initWithFrame:application.frame];
+    [monkey addDefaultXCTestPrivateActions];
+    [UUMonkeySingleton sharedInstance].monkey = monkey;
+  }
+  [UUMonkeySingleton sharedInstance].monkey.application = (XCUIApplication *)application;
+  [[UUMonkeySingleton sharedInstance].monkey monkeyAroundWithIterations:monkeyIterations];
   return FBResponseWithOK();
 }
 

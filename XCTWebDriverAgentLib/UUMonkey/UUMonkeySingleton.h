@@ -9,9 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 
+#import "UUMonkey.h"
+
+
 @interface UUMonkeySingleton : NSObject
 
 @property (nonatomic, weak) XCUIApplication *application;
+@property (nonatomic, strong) UUMonkey *monkey;
 
 + (instancetype)sharedInstance;
 

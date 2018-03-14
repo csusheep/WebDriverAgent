@@ -12,7 +12,7 @@
 @implementation UUMonkey (MonkeyXCTestPrivate)
 
 - (void)addDefaultXCTestPrivateActions {
-  [self addXCTestTapAction:50];
+  [self addXCTestTapAction:100];
 }
 
 - (void)addXCTestTapAction:(double)weight multipleTapProbability:(double)multipleTapProbability   multipleTouchProbability:(double)multipleTouchProbability {
