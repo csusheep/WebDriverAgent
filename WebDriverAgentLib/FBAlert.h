@@ -55,6 +55,8 @@ extern NSString *const FBAlertObstructingElementException;
  */
 - (BOOL)acceptWithError:(NSError **)error;
 
+- (BOOL)uuAcceptWithError:(NSError **)error;
+
 /**
  Dismisses alert, if present
 
@@ -62,6 +64,8 @@ extern NSString *const FBAlertObstructingElementException;
  @return YES if the operation succeeds, otherwise NO.
  */
 - (BOOL)dismissWithError:(NSError **)error;
+
+- (BOOL)uuDismissWithError:(NSError **)error;
 
 /**
  Clicks on an alert button, if present

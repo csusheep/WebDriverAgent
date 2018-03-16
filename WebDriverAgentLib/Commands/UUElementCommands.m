@@ -95,10 +95,11 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
   FBAlert *alert = [FBAlert alertWithApplication:application];
   NSError *error;
-  
-  while (alert.isPresent) {
-    [alert acceptWithError:&error];
+  NSInteger counts = 0;
+  while (alert.isPresent && counts < 10) {
+    [alert uuAcceptWithError:&error];
     alert = [FBAlert alertWithApplication:application];
+    counts += 1;
   }
   if (error) {
     return FBResponseWithError(error);
