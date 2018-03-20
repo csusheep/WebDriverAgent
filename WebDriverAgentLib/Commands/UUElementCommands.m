@@ -78,14 +78,18 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     [[FBRoute POST:@"/uusense/touchAndHold"].withoutSession respondWithTarget:self action:@selector(uuHandleTouchAndHoldCoordinate:)],
     [[FBRoute POST:@"/uusense/doubleTap"] respondWithTarget:self action:@selector(uuHandleDoubleTapCoordinate:)],
     [[FBRoute POST:@"/uusense/dragfromtoforduration"].withoutSession respondWithTarget:self action:@selector(uuHandleDragCoordinate:)],
+    [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
+    
     [[FBRoute GET:@"/uusense/ssid"].withoutSession respondWithTarget:self action:@selector(uuGetSSID:)],
     [[FBRoute GET:@"/uusense/source"].withoutSession respondWithTarget:self action:@selector(uuSource:)],
-    [[FBRoute POST:@"/uusense/back"] respondWithTarget:self action:@selector(uuBack:)],
+    
     [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)],
     [[FBRoute GET:@"/uusense/alert"].withoutSession respondWithTarget:self action:@selector(uuDealAlert:)],
+    
     [[FBRoute POST:@"/uusense/homescreen"].withoutSession respondWithTarget:self action:@selector(handleHomescreenCommand:)],
-    [[FBRoute POST:@"/uusense/monkey"].withoutSession respondWithTarget:self action:@selector(handleMonkeyCommand:)],
-    [[FBRoute POST:@"/uusense/activeTestingApp"].withoutSession respondWithTarget:self action:@selector(handleActiveTestingAppCommand:)]
+    [[FBRoute POST:@"/uusense/monkey"] respondWithTarget:self action:@selector(handleMonkeyCommand:)],
+    [[FBRoute POST:@"/uusense/activeTestingApp"].withoutSession respondWithTarget:self action:@selector(handleActiveTestingAppCommand:)],
+    [[FBRoute POST:@"/uusense/whetherCrashed"].withoutSession respondWithTarget:self action:@selector(handleWhetherCrashedCommand:)],
   ];
 }
 
@@ -214,8 +218,11 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 + (id<FBResponsePayload>)uuHandleTap:(FBRouteRequest *)request {
   
   CGPoint tapPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
-  [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {}];
-
+  dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+  [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+      dispatch_semaphore_signal(sema);
+  }];
+  dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
   return FBResponseWithOK();
 }
 
@@ -285,18 +292,22 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 }
 
 + (id<FBResponsePayload>)handleMonkeyCommand:(FBRouteRequest *)request {
-  XCUIApplication *application = [UUMonkeySingleton sharedInstance].application;
-  NSInteger monkeyIterations = [request.arguments[@"monkeyIterations"] integerValue];
-  if (application == nil) {
-    return FBResponseWithErrorFormat(@"Cannot get the current application");
+  @autoreleasepool {
+    FBApplication *app = request.session.application ?: [FBApplication fb_activeApplication];
+    XCUIApplication *application = (XCUIApplication *)app;
+    application = [UUMonkeySingleton sharedInstance].application;
+    NSInteger monkeyIterations = [request.arguments[@"monkeyIterations"] integerValue];
+    if (application == nil) {
+      return FBResponseWithErrorFormat(@"Cannot get the current application");
+    }
+    if (nil == [UUMonkeySingleton sharedInstance].monkey) {
+      UUMonkey *monkey = [[UUMonkey alloc] initWithFrame:application.frame];
+      [monkey addDefaultXCTestPrivateActions];
+      [UUMonkeySingleton sharedInstance].monkey = monkey;
+    }
+    [UUMonkeySingleton sharedInstance].monkey.application = (XCUIApplication *)application;
+    [[UUMonkeySingleton sharedInstance].monkey monkeyAroundWithIterations:monkeyIterations];
   }
-  if (nil == [UUMonkeySingleton sharedInstance].monkey) {
-    UUMonkey *monkey = [[UUMonkey alloc] initWithFrame:application.frame];
-    [monkey addDefaultXCTestPrivateActions];
-    [UUMonkeySingleton sharedInstance].monkey = monkey;
-  }
-  [UUMonkeySingleton sharedInstance].monkey.application = (XCUIApplication *)application;
-  [[UUMonkeySingleton sharedInstance].monkey monkeyAroundWithIterations:monkeyIterations];
   return FBResponseWithOK();
 }
 
@@ -309,6 +320,17 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:UUHomeButtonCoolOffTime]];
     [application activate];
+  }
+  return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)handleWhetherCrashedCommand:(FBRouteRequest *)request {
+  XCUIApplication *application = [UUMonkeySingleton sharedInstance].application;
+  if (application == nil) {
+    return FBResponseWithErrorFormat(@"Cannot get the current application");
+  }
+  if (application && !application.running) {
+    [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
   }
   return FBResponseWithOK();
 }

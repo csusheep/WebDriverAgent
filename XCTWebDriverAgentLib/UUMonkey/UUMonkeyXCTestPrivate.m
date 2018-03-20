@@ -21,7 +21,11 @@
         __strong __typeof(self) strongSelf = weakself;
         CGRect rect = [strongSelf randomRect];
         CGPoint tapPoint = [strongSelf randomPointInRect:rect];
-        [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:orientationValue handler:^(XCSynthesizedEventRecord *record, NSError *error) {}];
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:orientationValue handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+          dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
     }];
 }
 
@@ -38,7 +42,7 @@
     [[XCEventGenerator sharedGenerator] pressAtPoint:point forDuration:0.5 orientation:orientationValue handler:^(XCSynthesizedEventRecord *record, NSError *error) {
       dispatch_semaphore_signal(sema);
     }];
-    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
   }];
 }
 
