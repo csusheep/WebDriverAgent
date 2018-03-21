@@ -19,8 +19,8 @@
     __weak __typeof(self) weakself = self;
     [self addActionWithWeight:weight andAction:^{
         __strong __typeof(self) strongSelf = weakself;
-        CGRect rect = [strongSelf randomRect];
-        CGPoint tapPoint = [strongSelf randomPointInRect:rect];
+        CGRect rect               = [strongSelf randomRect];
+        CGPoint tapPoint          = [strongSelf randomPointInRect:rect];
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:orientationValue handler:^(XCSynthesizedEventRecord *record, NSError *error) {
           dispatch_semaphore_signal(sema);

@@ -69,8 +69,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 
 #pragma mark - <FBCommandHandler>
 
-+ (NSArray *)routes
-{
++ (NSArray *)routes {
   return
   @[
     [[FBRoute GET:@"/applist"].withoutSession respondWithTarget:self action:@selector(handleAPPList:)],
@@ -125,14 +124,14 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     
   }
   
-  float cpuUsage = [[DeviceInfoManager sharedManager] getCPUUsage];
-  int64_t totalMem = [[DeviceInfoManager sharedManager] getTotalMemory];
-  double freeMem = vm_page_size *vmStats.free_count;
-  int64_t freeDisk = [[DeviceInfoManager sharedManager] getFreeDiskSpace];
+  float cpuUsage           = [[DeviceInfoManager sharedManager] getCPUUsage];
+  int64_t totalMem         = [[DeviceInfoManager sharedManager] getTotalMemory];
+  double freeMem           = vm_page_size *vmStats.free_count;
+  int64_t freeDisk         = [[DeviceInfoManager sharedManager] getFreeDiskSpace];
   NSString *networkTypeStr = [[DeviceInfoManager sharedManager] getNettype];
-  
+
   NSString *totalMemStr = [NSString stringWithFormat:@"%.2f", totalMem/1024.0/1024.0];
-  NSString *freeMemStr = [NSString stringWithFormat:@"%.2f", freeMem/1024.0/1024.0];
+  NSString *freeMemStr  = [NSString stringWithFormat:@"%.2f", freeMem/1024.0/1024.0];
   NSString *freeDiskStr = [NSString stringWithFormat:@"%.2f", freeDisk/1024.0/1024.0];
   
   
@@ -147,8 +146,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   return FBResponseWithObject(dic);
 }
 
-+ (id<FBResponsePayload>)handleAPPList:(FBRouteRequest *)request
-{
++ (id<FBResponsePayload>)handleAPPList:(FBRouteRequest *)request {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
   Class LSApplicationWorkspace_class = objc_getClass("LSApplicationWorkspace");
@@ -159,7 +157,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   NSMutableArray *result = [NSMutableArray array];
   for (LSApplicationProxy_class in appList)
   {
-    NSString *bundleID = [LSApplicationProxy_class performSelector:@selector(applicationIdentifier)] ?:@"";
+    NSString *bundleID      = [LSApplicationProxy_class performSelector:@selector(applicationIdentifier)] ?:@"";
     NSString *localizedName = [LSApplicationProxy_class performSelector:@selector(localizedName)] ?:@"";
     NSString *shortVersionString =  [LSApplicationProxy_class performSelector:@selector(shortVersionString)] ?:@"";
     if ([bundleID  isEqual: @""] || [bundleID hasPrefix:@"com.apple."] ) {
@@ -176,17 +174,16 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 }
 
 + (id<FBResponsePayload>)uuHandleDoubleTapCoordinate:(FBRouteRequest *)request {
-  XCUIApplication *application = request.session.uu_application;
-  
-  CGPoint doubleTapPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
+  XCUIApplication *application        = request.session.uu_application;
+  CGPoint doubleTapPoint              = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
   XCUICoordinate *doubleTapCoordinate = [self.class uuGestureCoordinateWithCoordinate:doubleTapPoint application:application shouldApplyOrientationWorkaround:YES];
   [doubleTapCoordinate doubleTap];
   return FBResponseWithOK();
 }
 
 + (id<FBResponsePayload>)uuHandleTouchAndHoldCoordinate:(FBRouteRequest *)request {
-  CGPoint touchPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
-  double duration = [request.arguments[@"duration"] doubleValue];
+  CGPoint touchPoint        = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
+  double duration           = [request.arguments[@"duration"] doubleValue];
   dispatch_semaphore_t sema = dispatch_semaphore_create(0);
   [[XCEventGenerator sharedGenerator] pressAtPoint:touchPoint forDuration:[request.arguments[@"duration"] doubleValue] orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {
     dispatch_semaphore_signal(sema);
@@ -196,16 +193,15 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 }
 
 + (id<FBResponsePayload>)uuHandleDragCoordinate:(FBRouteRequest *)request {
-  
-  CGPoint startPoint = CGPointMake((CGFloat)[request.arguments[@"fromX"] doubleValue], (CGFloat)[request.arguments[@"fromY"] doubleValue]);
-  CGPoint endPoint = CGPointMake((CGFloat)[request.arguments[@"toX"] doubleValue], (CGFloat)[request.arguments[@"toY"] doubleValue]);
+  CGPoint startPoint      = CGPointMake((CGFloat)[request.arguments[@"fromX"] doubleValue], (CGFloat)[request.arguments[@"fromY"] doubleValue]);
+  CGPoint endPoint        = CGPointMake((CGFloat)[request.arguments[@"toX"] doubleValue], (CGFloat)[request.arguments[@"toY"] doubleValue]);
   NSTimeInterval duration = [request.arguments[@"duration"] doubleValue];
-  CGFloat velocity = [request.arguments[@"velocity"] floatValue];
+  CGFloat velocity        = [request.arguments[@"velocity"] floatValue];
   
-  CGFloat deltaX = endPoint.x - startPoint.x;
-  CGFloat deltaY = endPoint.y - startPoint.y;
-  double distance = sqrt(deltaX*deltaX + deltaY*deltaY);
-  double dragTime = distance / velocity;
+  CGFloat deltaX            = endPoint.x - startPoint.x;
+  CGFloat deltaY            = endPoint.y - startPoint.y;
+  double distance           = sqrt(deltaX*deltaX + deltaY*deltaY);
+  double dragTime           = distance / velocity;
   dispatch_semaphore_t sema = dispatch_semaphore_create(0);
   [[XCEventGenerator sharedGenerator] pressAtPoint:startPoint forDuration:duration liftAtPoint:endPoint velocity:velocity orientation:UIInterfaceOrientationPortrait name:@"uuHandleDrag" handler:^(XCSynthesizedEventRecord *record, NSError *error) {
     dispatch_semaphore_signal(sema);
@@ -214,9 +210,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   return FBResponseWithOK();
 }
 
-
 + (id<FBResponsePayload>)uuHandleTap:(FBRouteRequest *)request {
-  
   CGPoint tapPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
   dispatch_semaphore_t sema = dispatch_semaphore_create(0);
   [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {
@@ -227,7 +221,6 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 }
 
 + (id<FBResponsePayload>)handleGetWindowSize:(FBRouteRequest *)request {
-  
   CGRect frame = request.session.application.wdFrame;
   CGSize screenSize = FBAdjustDimensionsForApplication(frame.size, request.session.application.interfaceOrientation);
   return FBResponseWithStatus(FBCommandStatusNoError, @{
@@ -237,25 +230,20 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 }
 
 + (id<FBResponsePayload>)uuGetSSID:(FBRouteRequest *)request {
-  
   NSString *ssid = nil;
   ssid = [UUElementCommands CurrentSSIDInfo];
   
   return FBResponseWithStatus(FBCommandStatusNoError, @{
                                                         @"ssid": ssid?:@"",
                                                         });
-  
 }
 
 + (id<FBResponsePayload>)uuSource:(FBRouteRequest *)request {
-  
   CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
-  
   FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
   NSString *sourceType = request.parameters[@"format"];
   id result;
   if (!sourceType || [sourceType caseInsensitiveCompare:@"xml"] == NSOrderedSame) {
-    //[application fb_waitUntilSnapshotIsStable];
     result = [FBXPath uuXmlStringWithSnapshot:application.lastSnapshot];
   } else if ([sourceType caseInsensitiveCompare:@"json"] == NSOrderedSame) {
     result = application.fb_tree;
@@ -272,11 +260,9 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   CFAbsoluteTime end = CFAbsoluteTimeGetCurrent();
   NSLog(@"time cost: %0.3f", end - start);
   return FBResponseWithObject(result);
-  
 }
 
 + (id<FBResponsePayload>)uuBack:(FBRouteRequest *)request {
-  
   FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
   if (application.navigationBars.buttons.count > 0) {
     [[application.navigationBars.buttons elementBoundByIndex:0] tap];
@@ -294,8 +280,8 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 + (id<FBResponsePayload>)handleMonkeyCommand:(FBRouteRequest *)request {
   @autoreleasepool {
     FBApplication *app = request.session.application ?: [FBApplication fb_activeApplication];
-    XCUIApplication *application = (XCUIApplication *)app;
-    application = [UUMonkeySingleton sharedInstance].application;
+    if (nil != app) { }
+    XCUIApplication *application = [UUMonkeySingleton sharedInstance].application;
     NSInteger monkeyIterations = [request.arguments[@"monkeyIterations"] integerValue];
     if (application == nil) {
       return FBResponseWithErrorFormat(@"Cannot get the current application");
@@ -362,7 +348,6 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 }
 
 + (NSString *)buildTimestamp {
-  
   return [NSString stringWithFormat:@"%@ %@",
           [NSString stringWithUTF8String:__DATE__],
           [NSString stringWithUTF8String:__TIME__]
@@ -370,7 +355,6 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 }
 
 + (NSString *)CurrentSSIDInfo {
-  
   NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
   NSLog(@"Supported interfaces: %@", ifs);
   id info = nil;

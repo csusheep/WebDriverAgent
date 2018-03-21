@@ -32,12 +32,12 @@
 - (instancetype)initWithSeed:(UInt32)seed andFrame:(CGRect)frame {
     self = [super init];
     if (self) {
-      self.r = [UURandom aUURandomWithSeed:seed];
-      self.frame = frame;
-      self.randomActions = [NSMutableArray array];
-      self.totalWeight = 0;
+      self.r              = [UURandom aUURandomWithSeed:seed];
+      self.frame          = frame;
+      self.randomActions  = [NSMutableArray array];
+      self.totalWeight    = 0;
       self.regularActions = [NSMutableArray array];
-      self.application = nil;
+      self.application    = nil;
     }
     return self;
 }
@@ -59,17 +59,17 @@
 }
 
 - (void)addActionWithWeight:(double)weight andAction:(ActionClosure)action {
-    self.totalWeight += weight;
-    UURandomAction *iAction = [[UURandomAction alloc] init];
+    self.totalWeight          += weight;
+    UURandomAction *iAction   = [[UURandomAction alloc] init];
     iAction.accumulatedWeight = self.totalWeight;
-    iAction.action = [self actInForeground:action];
+    iAction.action            = [self actInForeground:action];
     [self.randomActions addObject:iAction];
 }
 
 - (void)addActionWithInterval:(double)interval andAction:(ActionClosure)action {
     UURegularAction *iAction = [[UURegularAction alloc] init];
-    iAction.interval = interval;
-    iAction.action = [self actInForeground:action];
+    iAction.interval         = interval;
+    iAction.action           = [self actInForeground:action];
     [self.regularActions addObject:iAction];
 }
 
@@ -110,8 +110,8 @@
 }
 
 - (CGPoint)randomPointAvoidingPanelAreas {
-    CGFloat topHeight = 20;
-    CGFloat bottomHeight = 20;
+    CGFloat topHeight               = 20;
+    CGFloat bottomHeight            = 20;
     CGRect frameWithoutTopAndBottom = CGRectMake(0, topHeight, self.frame.size.width, self.frame.size.height - topHeight - bottomHeight);
     return [self randomPointInRect:frameWithoutTopAndBottom];
 }
@@ -121,10 +121,10 @@
 }
 
 - (NSArray<NSValue *> *)randomClusteredPointsWithCount:(NSInteger)count {
-    
-    CGPoint centre = [self randomPoint];
+
+    CGPoint centre     = [self randomPoint];
     CGRect clusterRect = [self rectAround:centre andSizeFraction:3 inRect:self.frame];
-    
+  
     NSMutableArray *points = [NSMutableArray array];
     [points addObject:[NSValue valueWithCGPoint:centre]];
     
@@ -171,8 +171,8 @@
 
 - (CGRect)rectAround:(CGPoint)point andSizeFraction:(CGFloat)sizeFraction inRect:(CGRect)rect {
     CGFloat size = MIN(self.frame.size.width, self.frame.size.height) / sizeFraction;
-    CGFloat x0 = (point.x - self.frame.origin.x) * (self.frame.size.width - size) / self.frame.size.width + self.frame.origin.x;
-    CGFloat y0 = (point.y - self.frame.origin.y) * (self.frame.size.height - size) / self.frame.size.width + self.frame.origin.y;
+    CGFloat x0   = (point.x - self.frame.origin.x) * (self.frame.size.width - size) / self.frame.size.width + self.frame.origin.x;
+    CGFloat y0   = (point.y - self.frame.origin.y) * (self.frame.size.height - size) / self.frame.size.width + self.frame.origin.y;
     return CGRectMake(x0, y0, size, size);
 }
 
