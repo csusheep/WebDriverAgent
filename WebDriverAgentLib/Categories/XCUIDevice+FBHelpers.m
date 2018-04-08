@@ -42,6 +42,37 @@ static const NSTimeInterval FBHomeButtonCoolOffTime = 1.;
   return YES;
 }
 
+- (NSData *)uu_screenshotWithError:(NSError*__autoreleasing*)error
+{
+  Class xcScreenClass = objc_lookUpClass("XCUIScreen");
+  if (nil == xcScreenClass) {
+    NSData *result = [[XCAXClient_iOS sharedClient] screenshotData];
+    if (nil == result) {
+      if (error) {
+        *error = [[FBErrorBuilder.builder withDescription:@"Cannot take a screenshot of the current screen state"] build];
+      }
+      return nil;
+    }
+    return result;
+  }
+  
+  XCUIApplication *app = FBApplication.fb_activeApplication;
+  CGSize screenSize = FBAdjustDimensionsForApplication(app.frame.size, app.interfaceOrientation);
+  // https://developer.apple.com/documentation/xctest/xctimagequality?language=objc
+  // Select lower quality, since XCTest crashes randomly if the maximum quality (zero value) is selected
+  // and the resulting screenshot does not fit the memory buffer preallocated for it by the operating system
+  NSUInteger quality = 2;
+  CGRect screenRect = CGRectMake(0, 0, screenSize.width, screenSize.height);
+  
+  XCUIScreen *mainScreen = (XCUIScreen *)[xcScreenClass mainScreen];
+  NSData *result = [mainScreen screenshotDataForQuality:quality rect:screenRect error:error];
+  if (nil == result) {
+    return nil;
+  }
+
+  return result;
+}
+
 - (NSData *)fb_screenshotWithError:(NSError*__autoreleasing*)error
 {
   Class xcScreenClass = objc_lookUpClass("XCUIScreen");
