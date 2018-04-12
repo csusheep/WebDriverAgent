@@ -206,7 +206,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   [[XCEventGenerator sharedGenerator] pressAtPoint:startPoint forDuration:duration liftAtPoint:endPoint velocity:velocity orientation:UIInterfaceOrientationPortrait name:@"uuHandleDrag" handler:^(XCSynthesizedEventRecord *record, NSError *error) {
     dispatch_semaphore_signal(sema);
   }];
-  dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)((duration + dragTime) * NSEC_PER_SEC)));
+  dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)((duration + dragTime + 0.1) * NSEC_PER_SEC)));
   return FBResponseWithOK();
 }
 
@@ -274,6 +274,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 
 + (id<FBResponsePayload>)handleHomescreenCommand:(FBRouteRequest *)request {
   [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
+  [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:UUHomeButtonCoolOffTime]];
   return FBResponseWithOK();
 }
 
