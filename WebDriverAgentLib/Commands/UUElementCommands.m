@@ -185,7 +185,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   CGPoint touchPoint        = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
   double duration           = [request.arguments[@"duration"] doubleValue];
   dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-  [[XCEventGenerator sharedGenerator] pressAtPoint:touchPoint forDuration:[request.arguments[@"duration"] doubleValue] orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+  [[XCEventGenerator sharedGenerator] pressAtPoint:touchPoint forDuration:[request.arguments[@"duration"] doubleValue] orientation:UIInterfaceOrientationPortrait handler:^(XCSynthesizedEventRecord *record, NSError *error) {
     dispatch_semaphore_signal(sema);
   }];
   dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)));
@@ -197,7 +197,9 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   CGPoint endPoint        = CGPointMake((CGFloat)[request.arguments[@"toX"] doubleValue], (CGFloat)[request.arguments[@"toY"] doubleValue]);
   NSTimeInterval duration = [request.arguments[@"duration"] doubleValue];
   CGFloat velocity        = [request.arguments[@"velocity"] floatValue];
-  
+  if (velocity <= 0) {
+    return FBResponseWithErrorFormat(@"Duration velocity is invalid. passing velocity is %f", velocity);
+  }
   CGFloat deltaX            = endPoint.x - startPoint.x;
   CGFloat deltaY            = endPoint.y - startPoint.y;
   double distance           = sqrt(deltaX*deltaX + deltaY*deltaY);
@@ -213,7 +215,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
 + (id<FBResponsePayload>)uuHandleTap:(FBRouteRequest *)request {
   CGPoint tapPoint = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
   dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-  [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:0 handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+  [[XCEventGenerator sharedGenerator] pressAtPoint:tapPoint forDuration:0 orientation:UIInterfaceOrientationPortrait handler:^(XCSynthesizedEventRecord *record, NSError *error) {
       dispatch_semaphore_signal(sema);
   }];
   dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
