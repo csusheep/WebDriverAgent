@@ -10,6 +10,8 @@
 #import "FBScreenshotCommands.h"
 
 #import "XCUIDevice+FBHelpers.h"
+#import "FBRoute.h"
+#import "FBRouteRequest.h"
 
 @implementation FBScreenshotCommands
 
@@ -23,6 +25,7 @@
     [[FBRoute GET:@"/screenshot"] respondWithTarget:self action:@selector(handleGetScreenshot:)],
     [[FBRoute GET:@"uusense/screenshot"].withoutSession respondWithTarget:self action:@selector(uu_handleGetScreenshot:)],
     [[FBRoute GET:@"uusense/screenshot"] respondWithTarget:self action:@selector(uu_handleGetScreenshot:)],
+    [[FBRoute POST:@"/uusense/screenshot2"].withoutSession respondWithTarget:self action:@selector(uu_handlePostScreenshot:)],
   ];
 }
 
@@ -44,6 +47,20 @@
 {
   NSError *error;
   NSData *screenshotData = [[XCUIDevice sharedDevice] uu_screenshotWithError:&error];
+  if (nil == screenshotData) {
+    return FBResponseWithError(error);
+  }
+  NSString *screenshot = [screenshotData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+  return FBResponseWithObject(screenshot);
+}
+
++ (id<FBResponsePayload>)uu_handlePostScreenshot:(FBRouteRequest *)request
+{
+  NSError *error;
+  CGRect rect = CGRectMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue], (CGFloat)[request.arguments[@"width"] doubleValue], (CGFloat)[request.arguments[@"height"] doubleValue]);
+  
+  NSUInteger quality = (NSUInteger)[request.arguments[@"quality"] unsignedIntegerValue];
+  NSData *screenshotData = [[XCUIDevice sharedDevice] uu_screenshotWithSize:rect andQuality:quality andError:&error];
   if (nil == screenshotData) {
     return FBResponseWithError(error);
   }

@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSData *)fb_screenshotWithError:(NSError*__autoreleasing*)error;
 - (nullable NSData *)uu_screenshotWithError:(NSError*__autoreleasing*)error;
+- (nullable NSData *)uu_screenshotWithSize:(CGRect)rect andQuality:(NSUInteger)q andError:(NSError*__autoreleasing*)error;
 /**
  Returns device current wifi ip4 address
  */
