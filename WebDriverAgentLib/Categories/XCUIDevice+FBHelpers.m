@@ -81,10 +81,21 @@ static const NSTimeInterval FBHomeButtonCoolOffTime = 1.;
 
 - (NSData *)uu_screenshotWithError:(NSError*__autoreleasing*)error
 {
+  XCUIApplication *app = FBApplication.fb_activeApplication;
   Class xcScreenClass = objc_lookUpClass("XCUIScreen");
-  
+  NSData *result = nil;
   XCUIScreen *mainScreen = (XCUIScreen *)[xcScreenClass mainScreen];
-  NSData *result = [[mainScreen screenshot] PNGRepresentation];
+  if ( [[UIDevice currentDevice].systemVersion doubleValue] <= 11 ) {
+    result = [[mainScreen screenshot] PNGRepresentation];
+  } else {
+    CGSize screenSize = FBAdjustDimensionsForApplication(app.frame.size, app.interfaceOrientation);
+    // https://developer.apple.com/documentation/xctest/xctimagequality?language=objc
+    // Select lower quality, since XCTest crashes randomly if the maximum quality (zero value) is selected
+    // and the resulting screenshot does not fit the memory buffer preallocated for it by the operating system
+    NSUInteger quality = 0;
+    CGRect screenRect = CGRectMake(0, 0, screenSize.width, screenSize.height);
+    result = [mainScreen screenshotDataForQuality:quality rect:screenRect error:error];
+  }
   if (nil == result) {
     return nil;
   }
