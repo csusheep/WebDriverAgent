@@ -17,6 +17,8 @@
 #import "XCUIElement+FBUtilities.h"
 #import "XCUIElement+FBWebDriverAttributes.h"
 
+#import "UUResponsePicPayload.h"
+
 inline static NSDictionary *FBDictionaryResponseWithElement(XCUIElement *element, NSString *elementUUID, BOOL compact);
 
 id<FBResponsePayload> FBResponseWithOK()
@@ -77,6 +79,16 @@ id<FBResponsePayload> FBResponseWithStatus(FBCommandStatus status, id object)
     @"sessionId" : [FBSession activeSession].identifier ?: NSNull.null,
     @"status" : @(status),
   }];
+}
+
+id<FBResponsePayload> UUResponseWithPNG(NSData *object)
+{
+  return [[UUResponsePicPayload alloc] initWithData:object andType:@"png"];
+}
+
+id<FBResponsePayload> UUResponseWithJPG(id object)
+{
+  return [[UUResponsePicPayload alloc] initWithData:object andType:@"jpg"];
 }
 
 id<FBResponsePayload> FBResponseFileWithPath(NSString *path)

@@ -15,6 +15,8 @@
 		182E3D002052783400566DD2 /* UUMonkeyXCTestPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 182E3CFA2052783400566DD2 /* UUMonkeyXCTestPrivate.m */; };
 		182E3D012052783400566DD2 /* UURandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 182E3CFB2052783400566DD2 /* UURandom.h */; };
 		182E3D022052783400566DD2 /* UURandom.m in Sources */ = {isa = PBXBuildFile; fileRef = 182E3CFC2052783400566DD2 /* UURandom.m */; };
+		1871A2232088924700327831 /* UUResponsePicPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = 1871A2212088924700327831 /* UUResponsePicPayload.h */; };
+		1871A2242088924700327831 /* UUResponsePicPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871A2222088924700327831 /* UUResponsePicPayload.m */; };
 		188E876D1F4AC4AA00D88C91 /* UUElementCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 188E876B1F4AC4AA00D88C91 /* UUElementCommands.h */; };
 		188E876E1F4AC4AA00D88C91 /* UUElementCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 188E876C1F4AC4AA00D88C91 /* UUElementCommands.m */; };
 		188F02BE200DF4C200BE5F60 /* BatteryInfoManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 188F02B6200DF4C100BE5F60 /* BatteryInfoManager.h */; };
@@ -427,6 +429,8 @@
 		182E3CFA2052783400566DD2 /* UUMonkeyXCTestPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMonkeyXCTestPrivate.m; sourceTree = "<group>"; };
 		182E3CFB2052783400566DD2 /* UURandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UURandom.h; sourceTree = "<group>"; };
 		182E3CFC2052783400566DD2 /* UURandom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UURandom.m; sourceTree = "<group>"; };
+		1871A2212088924700327831 /* UUResponsePicPayload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UUResponsePicPayload.h; sourceTree = "<group>"; };
+		1871A2222088924700327831 /* UUResponsePicPayload.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UUResponsePicPayload.m; sourceTree = "<group>"; };
 		188E876B1F4AC4AA00D88C91 /* UUElementCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUElementCommands.h; sourceTree = "<group>"; };
 		188E876C1F4AC4AA00D88C91 /* UUElementCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUElementCommands.m; sourceTree = "<group>"; };
 		188F02B6200DF4C100BE5F60 /* BatteryInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryInfoManager.h; sourceTree = "<group>"; };
@@ -1051,6 +1055,8 @@
 				EE9AB77F1CAEDF0C008C271F /* FBResponseFilePayload.m */,
 				EE9AB7801CAEDF0C008C271F /* FBResponseJSONPayload.h */,
 				EE9AB7811CAEDF0C008C271F /* FBResponseJSONPayload.m */,
+				1871A2212088924700327831 /* UUResponsePicPayload.h */,
+				1871A2222088924700327831 /* UUResponsePicPayload.m */,
 				EE9AB7821CAEDF0C008C271F /* FBResponsePayload.h */,
 				EE9AB7831CAEDF0C008C271F /* FBResponsePayload.m */,
 				EE9AB7841CAEDF0C008C271F /* FBRoute.h */,
@@ -1479,6 +1485,7 @@
 				EEEC7C921F21F27A0053426C /* FBPredicate.h in Headers */,
 				EE158AD41CBD456F00A3E3F0 /* FBExceptionHandler.h in Headers */,
 				EE158ADE1CBD456F00A3E3F0 /* FBRoute.h in Headers */,
+				1871A2232088924700327831 /* UUResponsePicPayload.h in Headers */,
 				EE35AD471E3B77D600A02D78 /* XCTestDriver.h in Headers */,
 				EE35AD121E3B77D600A02D78 /* _XCTNSNotificationExpectationImplementation.h in Headers */,
 				EE35AD3A1E3B77D600A02D78 /* XCSynthesizedEventRecord.h in Headers */,
@@ -1833,6 +1840,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE158AC71CBD456F00A3E3F0 /* FBScreenshotCommands.m in Sources */,
+				1871A2242088924700327831 /* UUResponsePicPayload.m in Sources */,
 				EEEC7C931F21F27A0053426C /* FBPredicate.m in Sources */,
 				7136A47A1E8918E60024FC3D /* XCUIElement+FBPickerWheel.m in Sources */,
 				711084451DA3AA7500F913D6 /* FBXPath.m in Sources */,

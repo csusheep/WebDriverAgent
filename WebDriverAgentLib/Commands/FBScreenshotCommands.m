@@ -50,8 +50,11 @@
   if (nil == screenshotData) {
     return FBResponseWithError(error);
   }
-  NSString *screenshot = [screenshotData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-  return FBResponseWithObject(screenshot);
+  if ( [[UIDevice currentDevice].systemVersion doubleValue] <= 11 ) {
+    return UUResponseWithPNG(screenshotData);
+  } else {
+    return UUResponseWithJPG(screenshotData);
+  }
 }
 
 + (id<FBResponsePayload>)uu_handlePostScreenshot:(FBRouteRequest *)request

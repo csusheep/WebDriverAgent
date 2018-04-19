@@ -59,6 +59,16 @@ id<FBResponsePayload> FBResponseWithErrorFormat(NSString *errorFormat, ...) NS_F
 id<FBResponsePayload> FBResponseWithStatus(FBCommandStatus status, __nullable id object);
 
 /**
+ Returns 'png' response payload with given object
+ */
+id<FBResponsePayload> UUResponseWithPNG(NSData *object);
+
+/**
+ Returns 'jpg' response payload with given object
+ */
+id<FBResponsePayload> UUResponseWithJPG(id object);
+
+/**
  Returns 'FBCommandStatusNoError' response payload with content of a file at given 'path'
  */
 id<FBResponsePayload> FBResponseFileWithPath(NSString *path);
