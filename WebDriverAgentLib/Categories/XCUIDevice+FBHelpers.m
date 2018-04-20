@@ -92,7 +92,7 @@ static const NSTimeInterval FBHomeButtonCoolOffTime = 1.;
     // https://developer.apple.com/documentation/xctest/xctimagequality?language=objc
     // Select lower quality, since XCTest crashes randomly if the maximum quality (zero value) is selected
     // and the resulting screenshot does not fit the memory buffer preallocated for it by the operating system
-    NSUInteger quality = 0;
+    NSUInteger quality = 2;
     CGRect screenRect = CGRectMake(0, 0, screenSize.width, screenSize.height);
     result = [mainScreen screenshotDataForQuality:quality rect:screenRect error:error];
   }
