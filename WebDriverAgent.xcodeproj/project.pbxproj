@@ -2188,6 +2188,7 @@
 			buildSettings = {
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = NO;
@@ -2219,6 +2220,7 @@
 			buildSettings = {
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = 8SC497C43L;
