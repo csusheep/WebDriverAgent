@@ -12,7 +12,9 @@
 @implementation UUMonkey (MonkeyXCTestPrivate)
 
 - (void)addDefaultXCTestPrivateActions {
-  [self addXCTestTapAction:100];
+  [self addXCTestTapAction:80];
+  [self addXCTestLongPressAction:10];
+  [self addXCTestDragAction:10];
 }
 
 - (void)addXCTestTapAction:(double)weight multipleTapProbability:(double)multipleTapProbability   multipleTouchProbability:(double)multipleTouchProbability {
@@ -47,7 +49,17 @@
 }
 
 - (void)addXCTestDragAction:(double) weight {
-    
+  __weak __typeof(self) weakself = self;
+  [self addActionWithWeight:weight andAction:^{
+    __strong __typeof(self) strongSelf = weakself;
+    CGPoint start = [strongSelf randomPointAvoidingPanelAreas];
+    CGPoint end = [strongSelf randomPoint];
+    dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+    [[XCEventGenerator sharedGenerator] pressAtPoint:start forDuration:0 liftAtPoint:end velocity:1000 orientation:orientationValue name:@"Monkey drag" handler:^(XCSynthesizedEventRecord *record, NSError *error) {
+      dispatch_semaphore_signal(sema);
+    }];
+    dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
+  }];
 }
 
 - (void)addXCTestPinchCloseAction:(double) weight {
