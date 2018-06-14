@@ -89,6 +89,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     [[FBRoute POST:@"/uusense/monkey"] respondWithTarget:self action:@selector(handleMonkeyCommand:)],
     [[FBRoute POST:@"/uusense/activeTestingApp"].withoutSession respondWithTarget:self action:@selector(handleActiveTestingAppCommand:)],
     [[FBRoute POST:@"/uusense/whetherCrashed"].withoutSession respondWithTarget:self action:@selector(handleWhetherCrashedCommand:)],
+    [[FBRoute POST:@"/uusense/globalInput"] respondWithTarget:self action:@selector(uu_handleGlobalInput:)],
   ];
 }
 
@@ -322,6 +323,22 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
   }
   return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)uu_handleGlobalInput:(FBRouteRequest *)request {
+  NSString *text = request.arguments[@"text"];
+  if (!text) {
+    return FBResponseWithStatus(
+                                FBCommandStatusInvalidArgument,
+                                [NSString stringWithFormat:@"%@ is not a valid TEXT", text]
+                                );
+  }
+  NSUInteger frequency = 60;
+  NSError *error = nil;
+  if (![FBKeyboard typeText:text frequency:frequency error:&error]) {
+    return FBResponseWithErrorFormat(@"Failed to input");
+  }
+    return FBResponseWithOK();
 }
 
 
