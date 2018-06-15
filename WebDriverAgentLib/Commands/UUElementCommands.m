@@ -26,6 +26,7 @@
 #import "NSPredicate+FBFormat.h"
 #import "XCUICoordinate.h"
 #import "XCUIDevice.h"
+#import "XCTRunnerDaemonSession.h"
 #import "XCUIElement+FBIsVisible.h"
 #import "XCUIElement+FBPickerWheel.h"
 #import "XCUIElement+FBScrolling.h"
@@ -90,10 +91,59 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     [[FBRoute POST:@"/uusense/activeTestingApp"].withoutSession respondWithTarget:self action:@selector(handleActiveTestingAppCommand:)],
     [[FBRoute POST:@"/uusense/whetherCrashed"].withoutSession respondWithTarget:self action:@selector(handleWhetherCrashedCommand:)],
     [[FBRoute POST:@"/uusense/globalInput"] respondWithTarget:self action:@selector(uu_handleGlobalInput:)],
+    
+    [[FBRoute POST:@"/uusense/doubleMove"].withoutSession respondWithTarget:self action:@selector(uu_handleDoubleMove:)],
   ];
 }
 
 #pragma mark - Commands
++ (id<FBResponsePayload>)uu_handleDoubleMove:(FBRouteRequest *)request {
+
+  NSInteger aX1 = [request.arguments[@"aX1"] integerValue];
+  NSInteger aY1 = [request.arguments[@"aY1"] integerValue];
+  NSInteger aX2 = [request.arguments[@"aX2"] integerValue];
+  NSInteger aY2 = [request.arguments[@"aY2"] integerValue];
+  
+  NSInteger bX1 = [request.arguments[@"bX1"] integerValue];
+  NSInteger bY1 = [request.arguments[@"bY1"] integerValue];
+  NSInteger bX2 = [request.arguments[@"bX2"] integerValue];
+  NSInteger bY2 = [request.arguments[@"bY2"] integerValue];
+  
+  float duration = [request.arguments[@"duration"] floatValue];
+  
+  __block BOOL didSucceed;
+  [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
+    XCEventGeneratorHandler handlerBlock = ^(XCSynthesizedEventRecord *record, NSError *commandError) {
+      didSucceed = (commandError == nil);
+      completion();
+    };
+    
+    CGPoint hitPoint = CGPointMake(aX1, aY1);
+    CGPoint targetPoint = CGPointMake(aX2, aY2);
+    XCPointerEventPath *eventPath = [[XCPointerEventPath alloc] initForTouchAtPoint:hitPoint offset:0.0];
+    [eventPath moveToPoint:targetPoint atOffset:duration];
+    [eventPath liftUpAtOffset:duration];
+    
+    CGPoint hitPoint2 = CGPointMake(bX1, bY1);
+    CGPoint targetPoint2 = CGPointMake(bX2, bY2);
+    XCPointerEventPath *eventPath2 = [[XCPointerEventPath alloc] initForTouchAtPoint:hitPoint2 offset:0.0];
+    [eventPath2 moveToPoint:targetPoint2 atOffset:duration];
+    [eventPath2 liftUpAtOffset:duration];
+    
+    XCSynthesizedEventRecord *event =
+    [[XCSynthesizedEventRecord alloc]
+     initWithName:@"doubleMove"
+     interfaceOrientation:UIInterfaceOrientationPortrait];
+    
+    [event addPointerEventPath:eventPath];
+    [event addPointerEventPath:eventPath2];
+
+    [[XCTRunnerDaemonSession sharedSession] synthesizeEvent:event completion:^(NSError *invokeError){
+      handlerBlock(event, invokeError);
+    }];
+  }];
+  return FBResponseWithOK();
+}
 
 + (id<FBResponsePayload>)uuDealAlert:(FBRouteRequest *)request {
   FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
