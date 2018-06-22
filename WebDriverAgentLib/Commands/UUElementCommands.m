@@ -75,6 +75,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   @[
     [[FBRoute GET:@"/applist"].withoutSession respondWithTarget:self action:@selector(handleAPPList:)],
     [[FBRoute POST:@"/uusense/tap"].withoutSession respondWithTarget:self action:@selector(uuHandleTap:)],
+    [[FBRoute POST:@"/uusense/forcetouch"].withoutSession respondWithTarget:self action:@selector(uuHandleForceTouch:)],
     [[FBRoute POST:@"/uusense/touchAndHold"].withoutSession respondWithTarget:self action:@selector(uuHandleTouchAndHoldCoordinate:)],
     [[FBRoute POST:@"/uusense/doubleTap"] respondWithTarget:self action:@selector(uuHandleDoubleTapCoordinate:)],
     [[FBRoute POST:@"/uusense/dragfromtoforduration"].withoutSession respondWithTarget:self action:@selector(uuHandleDragCoordinate:)],
@@ -271,6 +272,36 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   }];
   dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
   return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)uuHandleForceTouch:(FBRouteRequest *)request {
+  CGPoint touchPoint    = CGPointMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue]);
+  double pressure = 1;
+  double duration = 1;
+  __block BOOL didSucceed;
+  [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)(void)){
+    XCEventGeneratorHandler handlerBlock = ^(XCSynthesizedEventRecord *record, NSError *commandError) {
+      didSucceed = (commandError == nil);
+      completion();
+    };
+    XCPointerEventPath *eventPath = [[XCPointerEventPath alloc] initForTouchAtPoint:touchPoint offset:0.0];
+    [eventPath pressDownWithPressure:pressure atOffset:0.0];
+
+    [eventPath liftUpAtOffset:duration];
+    XCSynthesizedEventRecord *event =
+    [[XCSynthesizedEventRecord alloc]
+     initWithName:[NSString stringWithFormat:@"Force touch on %@", NSStringFromCGPoint(touchPoint)]
+     interfaceOrientation:UIInterfaceOrientationPortrait];
+    [event addPointerEventPath:eventPath];
+    [[XCTRunnerDaemonSession sharedSession] synthesizeEvent:event completion:^(NSError *invokeError){
+      handlerBlock(event, invokeError);
+    }];
+  }];
+  if (didSucceed) {
+    return FBResponseWithOK();
+  } else {
+    return FBResponseWithErrorFormat(@"Failed to force touch");
+  }
 }
 
 + (id<FBResponsePayload>)handleGetWindowSize:(FBRouteRequest *)request {
