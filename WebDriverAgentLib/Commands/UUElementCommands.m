@@ -86,6 +86,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     
     [[FBRoute GET:@"/uusense/sysinfo"].withoutSession respondWithTarget:self action:@selector(uuGetSysInfo:)],
     [[FBRoute GET:@"/uusense/alert"].withoutSession respondWithTarget:self action:@selector(uuDealAlert:)],
+    [[FBRoute POST:@"/uusense/dealAlert"].withoutSession respondWithTarget:self action:@selector(uuDealAlertWithParam:)],
     
     [[FBRoute POST:@"/uusense/homescreen"].withoutSession respondWithTarget:self action:@selector(handleHomescreenCommand:)],
     [[FBRoute POST:@"/uusense/monkey"] respondWithTarget:self action:@selector(handleMonkeyCommand:)],
@@ -153,6 +154,30 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
   NSInteger counts = 0;
   while (alert.isPresent && counts < 10) {
     [alert uuAcceptWithError:&error];
+    alert = [FBAlert alertWithApplication:application];
+    counts += 1;
+  }
+  if (error) {
+    return FBResponseWithError(error);
+  }
+  return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)uuDealAlertWithParam:(FBRouteRequest *)request {
+  FBApplication *application = request.session.application ?: [FBApplication fb_activeApplication];
+  BOOL accept = [request.arguments[@"accept"] boolValue];
+  FBAlert *alert = [FBAlert alertWithApplication:application];
+  if (nil == alert) {
+    return FBResponseWithOK();
+  }
+  NSError *error;
+  NSInteger counts = 0;
+  while (alert.isPresent && counts < 10) {
+    if (accept) {
+      [alert uuAcceptWithError:&error];
+    } else {
+      [alert uuDismissWithError:&error];
+    }
     alert = [FBAlert alertWithApplication:application];
     counts += 1;
   }
