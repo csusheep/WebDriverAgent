@@ -82,7 +82,9 @@
   NSError *error;
   CGRect rect = CGRectZero;
   BOOL fullScreen = [request.arguments[@"full"] integerValue] == 1 ? YES : NO;
-  rect = CGRectMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue], (CGFloat)[request.arguments[@"width"] doubleValue], (CGFloat)[request.arguments[@"height"] doubleValue]);
+  if (!fullScreen) {
+      rect = CGRectMake((CGFloat)[request.arguments[@"x"] doubleValue], (CGFloat)[request.arguments[@"y"] doubleValue], (CGFloat)[request.arguments[@"width"] doubleValue], (CGFloat)[request.arguments[@"height"] doubleValue]);
+  }
   NSUInteger q = (NSUInteger)[request.arguments[@"quality"] unsignedIntegerValue];
   NSString *type = request.arguments[@"type"];
   NSData *screenshotData = nil;
