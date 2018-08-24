@@ -92,7 +92,7 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     [[FBRoute POST:@"/uusense/monkey"] respondWithTarget:self action:@selector(handleMonkeyCommand:)],
     [[FBRoute POST:@"/uusense/activeTestingApp"].withoutSession respondWithTarget:self action:@selector(handleActiveTestingAppCommand:)],
     [[FBRoute POST:@"/uusense/whetherCrashed"].withoutSession respondWithTarget:self action:@selector(handleWhetherCrashedCommand:)],
-    [[FBRoute POST:@"/uusense/globalInput"] respondWithTarget:self action:@selector(uu_handleGlobalInput:)],
+    [[FBRoute POST:@"/uusense/globalInput"].withoutSession respondWithTarget:self action:@selector(uu_handleGlobalInput:)],
     
     [[FBRoute POST:@"/uusense/doubleMove"].withoutSession respondWithTarget:self action:@selector(uu_handleDoubleMove:)],
   ];
