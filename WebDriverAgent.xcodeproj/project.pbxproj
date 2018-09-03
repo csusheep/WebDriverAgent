@@ -434,6 +434,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+<<<<<<< HEAD
 		1821993A205575870075D7E8 /* UUMonkeySingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UUMonkeySingleton.h; sourceTree = "<group>"; };
 		1821993B205575870075D7E8 /* UUMonkeySingleton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UUMonkeySingleton.m; sourceTree = "<group>"; };
 		182E3CF72052783400566DD2 /* UUMonkey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUMonkey.h; sourceTree = "<group>"; };
@@ -454,6 +455,8 @@
 		188F02BB200DF4C100BE5F60 /* DeviceInfoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceInfoManager.m; sourceTree = "<group>"; };
 		188F02BC200DF4C100BE5F60 /* NetWorkInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetWorkInfoManager.h; sourceTree = "<group>"; };
 		188F02BD200DF4C100BE5F60 /* NetWorkInfoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetWorkInfoManager.m; sourceTree = "<group>"; };
+=======
+>>>>>>> c233bf0776f87e5a589a83e688508c383b0cdb34
 		1FC3B2E12121EC8C00B61EE0 /* FBApplicationProcessProxyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBApplicationProcessProxyTests.m; sourceTree = "<group>"; };
 		44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCUIDeviceRotationTests.m; sourceTree = "<group>"; };
 		711084421DA3AA7500F913D6 /* FBXPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBXPath.h; sourceTree = "<group>"; };
