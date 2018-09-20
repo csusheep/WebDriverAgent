@@ -95,10 +95,17 @@ static const NSTimeInterval UUHomeButtonCoolOffTime = 1.;
     [[FBRoute POST:@"/uusense/globalInput"].withoutSession respondWithTarget:self action:@selector(uu_handleGlobalInput:)],
     
     [[FBRoute POST:@"/uusense/doubleMove"].withoutSession respondWithTarget:self action:@selector(uu_handleDoubleMove:)],
+    
+    [[FBRoute GET:@"/uusense/lockButton"].withoutSession respondWithTarget:self action:@selector(uu_lockButton:)],
   ];
 }
 
 #pragma mark - Commands
++ (id<FBResponsePayload>)uu_lockButton:(FBRouteRequest *)request {
+  [[XCUIDevice sharedDevice] pressLockButton];
+  return FBResponseWithOK();
+}
+
 + (id<FBResponsePayload>)uu_handleDoubleMove:(FBRouteRequest *)request {
 
   NSInteger aX1 = [request.arguments[@"aX1"] integerValue];
